@@ -1,0 +1,434 @@
+\documentclass{scrartcl}
+
+\usepackage{graphicx}
+
+\usepackage{amsmath}
+\usepackage{grffile} %suppresses file names from appearing with graphics
+\usepackage{breakcites}
+\usepackage{hyperref}
+
+\newcommand{\bibfont}{\footnotesize}
+
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\def \blank{\mbox{}}
+\def\d{\mbox{$\partial$}}
+\def\de{\mbox{$d_E$}}
+\def\dw{\mbox{$d_W$}}
+\def\dl{\mbox{$d_L$}}
+\def\da{\mbox{$d_A$}}
+\def\hb{\mbox{$\hbar$}}
+\def\Re{\mbox{\,Re\,}}
+\def\Im{\mbox{\,Im\,}}
+\def\dw{\mbox{$d_W$}}
+\def\nb{\mbox{$N_B$}}
+\def\A{\mbox{\bf A}}
+\def\B{\mbox{\bf B}}
+\def\C{\mbox{\bf C}}
+\def\M{\mbox{\bf M}}
+\def\W{\mbox{\bf W}}
+\def\K{\mbox{\bf K}}
+\def\Z{\mbox{\bf Z}}
+\def\P{\mbox{\bf P}}
+\def\x{\mbox{{\bf x}}}
+\def\b{\mbox{{\bf b}}}
+\def\k{\mbox{{\bf k}}}
+\def\g{\mbox{{\bf g}}}
+\def\q{\mbox{{\bf q}}}
+\def\ol{\mbox{$\bar{\lambda}$}}
+\def\Q{\mbox{{\bf Q}}}
+\def\R{\mbox{{\bf R}}}
+\def\S{\mbox{{\bf S}}}
+\def\L{\mbox{$L$}}
+\def\Rd{\mbox{$R^d$}}
+\def\DF{\mbox{{\bf DF}}}
+\def\Df{\mbox{{\bf Df}}}
+\def\DG{\mbox{{\bf DG}}}
+\def\DH{\mbox{{\bf DH}}}
+\def\DFL{\mbox{$\DF^L$}}
+\def\DGL{\mbox{$\DG^L$}}
+\def\OSL{\mbox{{\bf OSL}}}
+\def\T{\mbox{$T$}}
+\def\Ec{\mbox{{$\cal E$}}}
+\def\Pc{\mbox{{$\cal P$}}}
+\def\Ac{\mbox{{$\cal A$}}}
+\def\l{\mbox{$\lambda$}}
+\def\oma{\mbox{$\omega_A$}}
+\def\om{\mbox{$\omega$}}
+\def\eps{\mbox{$\epsilon$}}
+\def\Y{\mbox{$\bf{Y}$}}
+\def\X{\mbox{$\bf{X}$}}
+\def\Yhat{\mbox{$\bf{\hat{Y}}$}}
+\def\ybar{\mbox{$\bf{\bar{y}}$}}
+\def\y{\mbox{$\bf{y}$}}
+\def\v{\mbox{$\bf{v}$}}
+\def\ynn{\mbox{$\bf{y}^{NN}$}}
+\def\w{\mbox{$\bf{w}$}}
+\def\u{\mbox{$\bf{u}$}}
+\def\z{\mbox{$\bf{z}$}}
+\def\e{\mbox{$\bf{e}$}}
+\def\p{\mbox{$\bf{p}$}}
+\def\s{\mbox{$\bf{s}$}}
+\def\a{\mbox{$\bf{a}$}}
+\def\del{ \mbox{\boldmath{$\Delta$}} }
+\def\delt{ \mbox{\boldmath{$\delta$}} }
+\def\Phib{ \mbox{\boldmath{$\Phi$}} }
+\def\phib{ \mbox{\boldmath{$\phi$}} }
+\def\chib{ \mbox{\boldmath{$\chi$}} }
+\def\Psib{ \mbox{\boldmath{$\Psi$}} }
+\def\psib{ \mbox{\boldmath{$\psi$}} }
+\def\Thetab{ \mbox{\boldmath{$\Theta$}} }
+\def\thetab{ \mbox{\boldmath{$\theta$}} }
+\def\domega{ \mbox{$\delta\omega$}}
+\def\xint{\mbox{$\displaystyle\int d^3x \,$}}
+\def\f{\mbox{$\bf{f}$}}
+\def\F{\mbox{$\bf{F}$}}
+\def\E{\mbox{$\bf{E}$}}
+\def\D{\mbox{$\bf{D}$}}
+\def\H{\mbox{$\bf{H}$}}
+\def\G{\mbox{$\bf{G}$}}
+\def\U{\mbox{$\bf{U}$}}
+\def\J{\mbox{$\bf{J}$}}
+\def\S{\mbox{$\bf{S}$}}
+\def\ca{\mbox{Ca$^{2+}$}}
+\def\Dg{\mbox{$\Delta g$}}
+\def\K{\mbox{$\bf{K}$}}
+\def\I{\mbox{$\bf{I}$}}
+
+\begin{document}
+\title{Guide to minAzero.py}
+\subtitle{Variational Method on Path Integral}
+\author{Chris Knowlton}
+\maketitle
+\section*{Path Integral Method Derivation}
+
+Many systems of interest can be modeled as a dynamical system for which information is available about only some subset of the state variables.  Developing a method to estimate the optimum states and parameter values for these models conditioned on those measurements is essential for characterizing and predicting the future behavior of these systems.  Unlike other common methods such as particle filtering or kalman filters that use the state vector at each time to predict the state vector at subsequent times, the path integral method uses variations in all the states at all times to arrive at estimates of unmeasured quantities of the system.  As the entire trajectory is used, the method has some built in robustness against noisy data and chaotic behavior.
+\\
+
+Consider a dynamical system \f , that describes the evolution of a d dimensional state vector \x:
+\be
+\dot{\x} = \f(\x,\p)
+\ee
+These dynamics lead to a Fokker-Planck equation relating the density function P(\x(t)) at time N as a function of the state at time 0.
+\be
+P(\x(N)) = \int d \x(i) K(\x(N);\x(0)) P(\x(0))
+\ee
+where
+\be
+K(\x(N);\x(0)) = \int \prod_{i=0}^{N-1} d\x(i) K(\x(i+1); \x(i))
+\ee
+
+Working from the form in statistical mechanics and quantum mechanics, we rewrite the final state density as the function of the action, $A_0$, over the whole path - \X.
+
+\be
+P(\x(N)) = \int \prod_{i=0}^{N-1} d\x(i) \exp[-A_0(\X)]
+\ee
+
+Integrating over all possible states gives a means for calculating the expectation value of various quantities.
+
+\be
+E[G(\X)] = < G(\X) > = \frac{\int d\X G(\X) \exp[-A_0(\X)]}{\int d\X \exp[-A_0(\X)]}
+\ee
+
+To actually find $A_0$, we return to the probability distribution of the final state - which is conditioned on all the measurements that preceded it.
+\be
+P(\x(N)|\Y(i)) = \int \prod_{i=0}^{N-1} d\x(i) \exp[-A_0(\X,\Y)]
+\ee
+
+Where \Y(i) are all measurements \y(j) for  j goes from 0 to i.  Using Bayes' rule and the conditional mutual information \cite{fano} this can be further broken down.
+\bea
+&P(\x(i)|\Y(i)) & =  \frac{P\left( \x(i), \Y(i)\right)}{P(\Y(i))} \nonumber \\
+&& = \frac{P(\x(i),\Y(i))/P(\Y(i-1))}{P(\Y(i))/P(\Y(i-1))}\nonumber \\
+&& = \frac{P(\x(i),\y(i))|P(\Y(i-1))}{P(\y(i))|P(\Y(i-1))}\nonumber \\
+&& = \left[\frac{P(\x(i),\y(i)|\Y(i-1))}{P(\y(i)|\Y(i-1))P(\x(i)|\Y(i-1))}\right] P(\x(i)|\Y(i-1)) \nonumber \\
+&& = \exp \left[CMI(\x(i),\y(i)|\Y(i-1))\right] P(\x(i)|\Y(i-1))
+\eea
+
+Since the dynamics are assumed to be a Markov process the component outside the conditional mutual information can be defined in terms of the previous state.
+
+\be
+P(\x(i)|\Y(i-1)) = \int d\x(i-1) P(\x(i)|\x(i-1))P(\x(i-1)|\Y(m-1))
+\ee
+
+We can now recursively apply this step down to t=0.
+\bea
+&P(\x(N)|\Y) &= \int d\X \exp \Bigg\{ \sum_{i=0}^{N} CMI(\x(i),\y(i)|(\Y(i-1)) \nonumber \\
+&&+  \sum_{i=0}^{N-1} \log[P(\x(i+1)|\x(i)] + \log[P(\x(0))] \Bigg\} 
+\eea
+Which means that
+\bea
+&A_0(\X,\Y) &= - \Bigg\{\sum_{i=0}^{N}CMI(\x(i),\y(i)|\Y(i-1))\nonumber\\
+&&+ \sum_{i=0}^{N-1} \log[P(\x(i+1)|\x(i))] + \log[P(\x(0))] \Bigg\}
+\eea
+
+
+\subsection*{Simplifications and Approximations to the Action}
+
+Based only on the assumption that the dynamics represents a Markov process, the action of a dynamical system for which measurements can be made can be represented as:
+\bea
+&A_0(\X,\Y) &= - \Bigg\{\sum_{i=0}^{N}CMI(\x(i),\y(i)|\Y(i-1))\nonumber\\
+&&+ \sum_{i=0}^{N-1} \log[P(\x(i+1)|\x(i))] + \log[P(\x(0))] \Bigg\}
+\eea
+We will first assume that each measurement (\y(t)) is independently distributed from previous measurements.  This is not to say that there are not errors that are correlated with activity - but that the noise or errors created by our measurement apparatus are uncorrelated.  We will additionally assume that the errors are distributed in a Gaussian manner with $\sigma_i = 1/\sqrt{Rm_i}$.  This assumption is not essential, and any distribution but a Gaussians is chosen absent another obvious choice because of the resulting simplification.\\
+
+As the measurements are now uncorrelated, there is no conditional probability on \Y(i-1) - this means that the conditional mutual information is simply the log of the joint probability distribution of \x(i) and \y(i).  As we have assumed a Gaussian distribution, this term becomes a least squared error between the L measurements and the L measured states (or potentially functions of states).
+\be
+-\sum_{i=0}^{N}CMI(\x(i),\y(i)|\Y(i-1)) \approx \sum_{i=0}^{N}\sum_{k=1}^{L}\frac{Rm_k(i)}{2}\Big[y_k(i) - x_k(i) \Big]^2 
+\ee
+
+For the model term, if the dynamics are deterministic and correct, the probability distribution is a delta function.
+
+\be
+P(\x(i+1)|\x(i)) = \delta(\x(i+1) - \F(\x(i),\p))
+\ee
+
+Where $\F$ is the integrated map derived from the dynamics, \f.\\
+
+In general the dynamics are not exact and for modeled physical system always going to be wrong to a degree by stocastic processes, unmodeled activity, or a multitude of other reasons.  To account for these errors, we broaden the delta function distribution into a Gaussian distribution on the difference between the mapping \F and the next state \x.
+
+\be
+-\sum_{i=0}^{N-1} \log[P(\x(i+1)|\x(i)] \approx \sum_{i=0}^{N-1}\sum_{k=1}^{D}\frac{Rf_k(i)}{2}\Big[x_k(i+1) - F_k(\x(i),\p) \Big]^2 
+\ee
+Where D is the size of the state vector X.  Rf is essentially $1/\sigma^2$ for the 'model noise' and is scaled according to the range of the dynamics and the confidence level of the dynamics, taking into account known sources of stochasticity.  Together with the measurement term this gives a total simplified action in a numerical form that is simple to work with yet broad in scope.
+
+\be
+A_0 = \sum_{i=0}^{N-1}\sum_{k=1}^{D}\frac{Rf_k(i)}{2}\Big[x_k(i+1) - F_k(\x(i),\p) \Big]^2 + \sum_{i=0}^{N}\sum_{k=1}^{L}\frac{Rm_k(i)}{2}\Big[y_k(i) - x_k(i) \Big]^2 
+\ee
+
+The code outlined here will use the variational method to find a minimum of this action that corresponds to the most likely set of states and parameters for the set of measurements provided.
+
+\subsection*{A Note on Minima}
+For chaotic systems, the action space tends to have a fractal number of local minima, and as such finding a global minima becomes a challenge.  The measurement term in the cost function provides and implicit coupling term to the measured quantities.  This coupling term can alter the Jacobian of the system in such a way that there are no longer any local positive conditional Lyaponov exponents, in other words the coupled system is no longer chaotic around the measured point because of the information provided by the measurement.  This 'synchronization' is heavily dependent on the choice of measurements and the activity of the system explored by the choice of stimulus.  There is a huge amount to write on this subject which I am working on compiling for my thesis but the short summary is that like all tools, this method is difficult to use for some problems and even if used correctly may not be appropriate for the project at hand.
+
+
+\section*{Installing Required Programs and Packages}
+This document will assume that the user is using a Linux distribution and has sudo access - while it may be possible to install this setup on another Unix system (such as Mac) I have never attempted to do so.
+
+\subsection*{IPOPT}
+\subsubsection*{Download}
+Get it here: \url{https://projects.coin-or.org/Ipopt}
+\bi
+\item Download and unzip latest version of IPOPT 
+\item As of right now this is 3.11.7 - Efficacy of installation instructions may degrade over time as packages are updated.
+\item Go into ThirdParty folder in the IPOPT directory then do the following commands.
+\ei
+\begin{verbatim}
+$ cd Blas
+$ ./get.Blas
+$ cd ../Lapack
+$ ./get.Lapack
+$ cd ../ASL
+$ ./get.ASL
+$ cd ../Metis
+$ ./get.Metis
+\end{verbatim}
+\bi
+\item Get the HSL subroutines from \url{http://hsl.rl.ac.uk/ipopt}
+\item Note that there are two releases for HSL - you will want the more complete one that contains ma57, ma77, and ma97. 
+\item While the freely available ma27 will work for many problems, the newer packages are faster, work on larger problems, and can use multi-core architecture.
+\item This will require filling out a form stating essentially that you are in academia and waiting a couple hours for a link to download.
+\item Unpack the resulting library into the ThirdParty folder such that the path is (IPOPT Path)/ThirdParty/HSL/coinhsl
+\ei
+
+\subsubsection*{Install}
+\bi
+\item Go to the IPOPT directory
+\ei
+\begin{verbatim}
+$ mkdir build
+$ cd build
+$ ../configure
+\end{verbatim}
+\bi
+\item Note that if you have lapack or blas installed previously you can use --with-lapack and --with-blas to link to those packages
+\item If something goes wrong refer here \url{http://www.coin-or.org/Ipopt/documentation/node19.html#ExpertInstall}
+\item Assuming everything worked:
+\ei
+\begin{verbatim}
+$ make
+$ make test
+$ make install
+\end{verbatim}
+
+
+\pagebreak
+\section*{minAzero.py}
+minAzero is a python script used to write C++ code and compiler instructions using the IPOPT (Interior Point OPTimization) libraries to estimate unmeasured states and parameters in dynamical systems with limited measurements.  The scripts take a set of differential equations and state and parameter names provided by a text file "equations.txt" and returns a set of C++ files consisting of a set of constraints based on a discretized version of those differential equations.  A second text file 'specs.txt' allows for changes in run specific quantities state and parameter bounds, as well as input files without the need to recompile.
+
+
+\section*{List of Files}
+\bi
+\item discAzero.py\\
+	-Discretizes equations and creates strings for Jacobian and Hessian Elements.
+\item makecppAzero.py\\
+	-Writes C++ file linking to IPOPT libraries using strings from discAzero.py
+\item makehppAzero.py\\
+	-Writes header file for above
+\item makemakeAzero.py\\
+	-Writes makefile for problem.  Will need to be changed based on install location of IPOPT
+\item makeoptAzero.py\\
+	-Writes settings file for IPOPT
+\ei
+
+These files can be put in /usr/local/sbin for ease of use
+\subsection*{Installation}
+\bi
+\item These python scripts link to the sympy library.  To install these, use sudo apt-get install sympy or download directly from sympy.org.
+\item In order to link to your IPOPT libraries correctly, one line in makemakeAzero.py need to be modified.
+\item change line 59:
+\begin{verbatim}
+prefix = /home/mcserver/Desktop/Ipopt-3.11.7/build\n\
+\end{verbatim}
+to the build directory for your IPOPT installation.
+\ei
+
+\pagebreak
+\section*{Running the Code}
+minAzero uses two text documents (along with any needed data files) as input, equations.txt and specs.txt.  Once these are filled
+\\
+\bigskip
+\\
+{\bf equations.txt} contains information on the model and is used once for generating the needed cpp and hpp files for the run.  The file should be written as described below in this order.
+
+\bi
+\item The first line is the problem name, this name will be used to name the resulting executable.
+\item The second line tells minAzero how many dynamical variables, parameters, coupling terms, stimuli, functions, and measurements there are, in that order as a comma delimited list.  It is essential that these numbers are accurate as minAzero uses this to know how many lines to read for each component of the code.
+
+\item A list of every differential equation.
+
+\item The measurement term of the cost function.  A penalty term for coupling terms is suggested as any coupling to measurements is not present in physical systems.
+
+\item The names of all the variables.  These must be the same as used in the differential equations and should be multiple letters/and or numbers such that variable name is contained in any other name or common function.
+\item The names of parameters, names of couplings, names of data, and names of stimuli, in that order.  Again use fully unique names.
+\item Function names and number of arguments of that function separated by a comma.  Use a function if there is some component of the dynamics with a removable singularity or other difficult numerical object that requires an alternative local definition.
+\item Functions will require an additional file 'myfunctions.cpp' containing the function definition along with its jacobian and hessian (an example of this is included)
+\ei
+\bigskip
+\pagebreak
+{\bf specs.txt} contains run specific information such as file names, variable bounds, and problem length.  This file can be edited without recompiling the code.
+
+\bi
+\item First line is the number of full steps the code will use.  Because the code is compiled using a midpoint method, the actual problem length will double this plus one.
+\item Second line is the number of lines in each input file to skip.  This allows for the code to start at any point in a long data set.
+\item Third line is double the time step of the data.  Again since a midpoint method is used, the time step is for a whole step - which includes two points.
+\item If you wish to start at a non constant guess, you can put a 1 followed by a line with an initial condition file.  This file should have one column for each state.  If you do not want to include an initial condition file, use 0
+\item One line for each of the measured data file names.  Each file should be a single column.
+\item One line for each of the stimulus data file names.  Each file should be a single column.
+\item For each variable, the lower bound, upper bound, initial guess, and RF value separated by commas.  The initial value is ignored if the initial conditions file is used, but a value must be included regardless.
+\item For each coupling term, a line with lower bound, upper bound, and initial value separated by commas followed by another line for lower bound, upper bound, and initial value for the derivative of the coupling term.
+\item For each parameter a lower bound, upper bound, and initial guess separated by commas
+\ei
+Once everything is filled out and all data files are present, you can run the python scripts:
+\begin{verbatim}
+$ minAzero.py
+$ make
+$ ./(problem_name)_cpp
+\end{verbatim}
+If data files are missing or too short, the code will segfault.  The outputs are {\bf data.dat} containing all state variables at all times, and {\bf param.dat} with parameter values.
+
+
+\pagebreak
+\subsection*{Example equations.txt}
+\begin{verbatim}
+# lines starting with # are ignored
+# Problem Name
+Colpitts
+# nY,nP,nU,nI,nF,nM
+3,3,1,0,0,1
+# equations
+yy+u00*(Data-xx)
+-gam*(xx+zz)-qq*yy
+eta*(yy+1-exp(-xx))
+# measurement portion of Objective/Cost function 
+# the model portion is generated automatically
+(Data-xx)*(Data-xx)+u00*u00
+# variable names (nY)
+xx
+yy
+zz
+# parameter names (nP)
+gam
+qq
+eta
+# coupling names (nU)
+# most minAzero formulated problems will not need a coupling term
+# this term is essential for equality constrained dynamics
+u00
+# data names (nM)
+Data
+# stimuli names (nI)
+# no stimuli in this problem
+# functions (nF)
+# list of functions and number of arguments - will require myfunctions.cpp
+# with definitions of f(x) and its jacobian and hessian.
+# alpha,4
+\end{verbatim}
+\pagebreak
+\subsection*{Example specs.txt}
+\begin{verbatim}
+# lines starting with # are ignored
+# The problem length - actual length will be 4001 due to midpoint method
+2000
+# How much data to skip.
+# In case you do not want to start at the beginning of the data file
+10
+# Time step - this is twice the time step of the data,
+# since the data includes time and midpoints.
+0.2
+# Data File names - measurements
+# each measurement needs its own file in its own row
+testx.dat
+#colscale1x.dat
+# Data File names - stimuli
+# each stimuli needs its own file in its own row
+# No stimuli for this problem
+# Boundary & initial conditions
+# 0 for no initial data file, 1 for data file
+# A data file must include values for all state variables at each time point.
+0
+# If above is 1, list name of data file next.  If 0, no entry needed.
+#start.dat
+# State Variable bounds:
+# These are in the formats: lower bound, upper bound, initial guess, RF
+# Boundary & initial conditions
+# x
+-100, 100, 20,1
+# y
+-100, 100, 10,1
+# z
+-100, 100, 1,1
+# each coupling needs two entries, for u and du as there is no equation for u
+# u00 
+# couplings are typically not needed in unconstrained problems
+# but are essential in equality constraint problems
+0,1,0
+-10,10,0
+# each parameter needs upper bound, lower bound, initial guess
+# p1
+0, 100, 0.016
+# p2
+0, 100, 0.14
+# p3
+0, 100, 1.26
+\end{verbatim}
+
+\begin{thebibliography}{99}
+\bibitem[Fano, 1961]{fano} Fano, R. M.,   {\em Transmission of Information: A Statistical Theory of Communication}, Wiley, New York, (1961).
+
+\bibitem[Toth, et al., 2011]{biocyb1} B. A. Toth, Kostuk, M., C. D. Meliza, D. Margoliash, and H. D. I. Abarbanel,``Dynamical Estimation of Neuron and Network Properties I: Variational Methods,''  {\em Biological Cybernetics}, Biol Cybern
+DOI 10.1007/s00422-011-0459-1, 1 - 21, (2011).
+
+\bibitem[Toth, 2010]{toth} B. A. Toth, ``Python Scripting for Dynamical Parameter Estimation in IPOPT,"{\em SIAG/OPT Views-and-News}{\bf 21:1}, 1-8 (2010).
+
+\bibitem[W\"{a}chter \& Biegler, 2006]{ipopt} A. $W\ddot{a}$chter and L. T. Biegler, ``On the Implementation of a Primal-Dual
+Interior Point Filter Line Search Algorithm for Large-Scale Nonlinear Programming,"{\em Mathematical
+Programming }{\bf 106}, 25-57 (2006).
+
+\end{thebibliography}
+
+\end{document}

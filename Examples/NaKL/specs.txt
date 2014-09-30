@@ -1,0 +1,53 @@
+3000
+0
+0.04
+./noise_measured.dat
+./current.dat
+0
+#./allstates.dat
+# 5th column are integration initial conditions (not read by minAzero)
+-150,70,1e-3,-64
+0, 1,1e1,0.05
+0, 1,1e1,0.6
+0, 1,1e1,0.4
+# actual values are last value (not read by minAzero) - use as reference
+#gna
+50,200,100,120
+#Ena
+0,100,50,50
+#gki
+5,40,30,20
+#Ek
+-100,-50,-70,-77
+#gl
+0.1,1,.2,.3
+#El
+-60,-50,-52,-54
+#Area
+0.5,1.5,1,0.8
+#mv1
+-60,-30,-45,-40
+#mv2
+.01,0.1,.075,0.06667
+#cm1
+0.05,.25,.15,.1
+#cm2
+.1,1,.4,.4
+#hv1
+-70,-40,-50,-60
+#hv2
+-0.1,-.01,-.05,-.06667
+#ch1
+.1,5,1.2,1
+#ch2
+1,15,6,7
+#nv1
+-70,-40,-52,-55
+#nv2
+.01,0.1,.03,.03333
+#cn1
+.1,5,.8,1
+#cn2
+2,12,5,5
+#
+2,1,30

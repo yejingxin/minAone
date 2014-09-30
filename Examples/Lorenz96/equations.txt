@@ -1,0 +1,48 @@
+# Data file for discretize.py
+# Discretize.py skips over any line that begin with #
+# Proper format is:
+# First line is problem name
+# Second line is number of equations (w/o cost), number of parameters, number of controls,
+# number of external stimuli (for instance, injected current)
+# Following lines list the equations
+# With the cost function last
+# Then the variable names (in same order as equations)
+# Parameter names used in equations
+# Control names used in equations
+# Data names used in equations
+# Problem Name
+lorenz96
+# nY.nP,nU,nI
+#5,1,1,0
+# nY,nP,nU,nI,nF,nM
+5,1,0,0,0,1
+# equations
+yy5*(yy2-yy4)-yy1+FF1
+#+k1*(data1-yy1)
+yy1*(yy3-yy5)-yy2+FF1
+yy2*(yy4-yy1)-yy3+FF1
+#+k3*(data3-yy3)
+yy3*(yy5-yy2)-yy4+FF1
+yy4*(yy1-yy3)-yy5+FF1
+#+k5*(data5-yy5)
+# Objective/Cost function
+2*(data1-yy1)*(data1-yy1)
+#+(data3-yy3)*(data3-yy3)+(data5-yy5)*(data5-yy5)
+#+k5*k5+k1*k1+k3*k3
+# variable names
+yy1
+yy2
+yy3
+yy4
+yy5
+# parameter names
+FF1
+# control names
+#k1
+#k3
+#k5
+# data names
+data1
+#data3
+#data5
+# stimuli names
