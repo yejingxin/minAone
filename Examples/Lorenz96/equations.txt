@@ -26,7 +26,7 @@ yy3*(yy5-yy2)-yy4+FF1
 yy4*(yy1-yy3)-yy5+FF1
 #+k5*(data5-yy5)
 # Objective/Cost function
-2*(data1-yy1)*(data1-yy1)
+4*(data1-yy1)*(data1-yy1)
 #+(data3-yy3)*(data3-yy3)+(data5-yy5)*(data5-yy5)
 #+k5*k5+k1*k1+k3*k3
 # variable names
