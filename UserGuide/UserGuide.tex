@@ -47,6 +47,8 @@ After identifying the global minima and other local minima of $A_0$, we can empl
 \end{equation}
 plus exponentially small corrections.
 If the action level $A_0(X^0)$ is substantially less than the action level on the next path $A_0(X^0) \ll A_0(X^1)$, all statistical data assimilation expected values $\langle G(X)\rangle$ are given by $X^0$ and fluctuations about that path with exponential accuracy of order $\exp[-(A_0(X^1) - A_0(X^0))]$.
+
+More details can be found in Ye, J., Kadakia, N., Rozdeba, P. J., Abarbanel, H. D. I., and Quinn, J. C.: Improved variational methods in statistical data assimilation, Nonlin. Processes Geophys., 22, 205-213, doi:10.5194/npg-22-205-2015, 2015
 \section{Installing Required Programs and Packages}
 This document will assume that the user is using a Linux distribution and has basic compliers installed including gcc, gfortran and python.
 \subsection{Python Packages}
@@ -407,6 +409,32 @@ Iinj
 \caption{NaKL Action Level}
 \label{fig:NaKL}
 \end{figure}
+\newpage
+\section{New Features}
+\subsection{ Resubmission Feature (added 2015/4/9)}
+\subsubsection{Description}
+For some historical reason, it is complicated to configure data files to start the annealing process with a bunch of given initial paths. However, when the annealing method is applied to some large scale dynamical systems like complex neuron model and neural networks, it is often killed by job manager system after its running time exceeds 24 hours. The target of this update is to allow one can continue the computation starting with old path data files obtained from previous annealing calculation conveniently.
+\subsubsection{Installation}
+If you are using the old version \texttt{minAone} right now, you can simply replace the old \texttt{minAone.py} with the new one. Done!!!
+\subsubsection{Data File Configuration}
+Current version only reads the data files named by \texttt{D\%d\_M\%d\_PATH\%d.dat} located in the same directory with executive file. After you change initial condition indicator to be 1 in \texttt{specs.txt}, and add another dummy filename after that line, the $i$th annealing process will look for the last line of \texttt{D\%d\_M\%d\_PATH}$i$\texttt{.dat}. Note the path data are arranged in the following way
+\begin{verbatim}
+beta exitflag action_value 
+optimal_path[x1(0) x2(0) x3(0) x4(0) x5(0)  x1(1) x2(1) x3(1) 
+x4(1) x5(1) ... x1(NT) x2(NT) x3(NT) x4(NT) x5(NT)
+ p(1) p(2) ... p(NP)]
+\end{verbatim}
+$\beta$ value is initialed by the first integer of the line plus beta step increment, exitflag and action value will be omitted automatically, and then the initial path is filled by the remaining numbers of the line.
+
+If the file \texttt{D\%d\_M\%d\_PATH}$i$\texttt{.dat} is not found, its initial path will be generated with random numbers. The program doesn't check completeness of the path file, and the code seeks the last path line by line, so please make sure your path data file \texttt{D\%d\_M\%d\_PATH}$i$\texttt{.dat} has a complete path in EACH line(not only the last line).
+
+In summary, the following is the list of the steps
+\begin{enumerate}
+\item change initial condition indicator to be 1 in \texttt{specs.txt}, and add another {\color{red}dummy} filename after that line. 
+\item put all the \texttt{D\%d\_M\%d\_PATH\%d.dat} files in the same directory with the executive file, make sure the numbers after letter \texttt{D} and letter \texttt{M} in the filename are consistent with the information in your \texttt{equations.txt}
+\item run the executive file
+\end{enumerate}
+\paragraph{Warning:} The resubmission feature would introduce round-off errors. Double precision data are outputted into the file in the format of \texttt{\%e}, when those data are read back into the code, it may introduce round-off errors. In the example of Lorenz96, the round-off error caused the final optimal values of the cost function differed from regular calculation values by $0\sim25$.
 \section{Troubleshooting}
 I have tested these scripts over a wide range of problems, so I believe that the algorithms are correct. However, there are a few common errors that may crop up.
 \begin{itemize}
