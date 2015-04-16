@@ -490,6 +490,7 @@ f.write('    char filename[20];\n\
 		    bounds[i][3]=pow(alpha,beta)*Rf0[i];\n\
 	    }\n\
         fclose (initFILE);\n\
+        for(Index i=0;i<Ntotal;i++) solution[i] = x[i];\n\
     \n\
     }else if(specs[3+nM+nI] =="2"){\n\
     \n\

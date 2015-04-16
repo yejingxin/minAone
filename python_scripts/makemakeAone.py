@@ -52,10 +52,10 @@ ADDINCFLAGS =\n\
 CXX = g++\n\
 \n\
 # C++ Compiler options\n\
-CXXFLAGS = -O3 -fomit-frame-pointer -pipe -DNDEBUG -pedantic-errors -Wimplicit -Wparentheses -Wreturn-type -Wcast-qual -Wall -Wpointer-arith -Wwrite-strings -Wconversion -Wno-unknown-pragmas\n\
+CXXFLAGS = -O3 -pipe -DNDEBUG -pedantic-errors -Wparentheses -Wreturn-type -Wcast-qual -Wall -Wpointer-arith -Wwrite-strings -Wconversion -Wno-unknown-pragmas -Wno-long-long   -DIPOPT_BUILD\n\
 \n\
 # additional C++ Compiler options for linking\n\
-CXXLINKFLAGS = -Wl,--rpath -Wl,/usr/local/ipopt/lib\n\
+CXXLINKFLAGS =  -Wl,--rpath -Wl,/usr/local/Ipopt/lib\n\
 \n\
 # Directory with header files\n\
 IPOPTINCDIR = ${prefix}/include/coin\n\
@@ -63,14 +63,14 @@ IPOPTINCDIR = ${prefix}/include/coin\n\
 # Directory with libipopt.a\n\
 IPOPTLIBDIR = ${exec_prefix}/lib\n\
 exec_prefix = ${prefix}\n\
-prefix = /usr/local/ipopt\n\
+prefix = /usr/local/Ipopt\n\
 \n\
 # Libraries necessary to link with IPOPT\n\
 #LIBS = -L$(IPOPTLIBDIR) -lipopt @IPADDLIBS@\n\
-LIBS = `PKG_CONFIG_PATH=/usr/local/ipopt/lib64/pkgconfig:/usr/local/ipopt/lib/pkgconfig:/usr/local/ipopt/share/pkgconfig: pkg-config --libs ipopt`\n\
+LIBS = `PKG_CONFIG_PATH=/usr/local/Ipopt/lib64/pkgconfig:/usr/local/Ipopt/lib/pkgconfig:/usr/local/Ipopt/share/pkgconfig: pkg-config --libs ipopt`\n\
 # Necessary Include dirs (we use the CYGPATH_W variables to allow\n\
 # compilation with Windows compilers)\n\
-INCL =  `PKG_CONFIG_PATH=/usr/local/ipopt/lib64/pkgconfig:/usr/local/ipopt/lib/pkgconfig:/usr/local/ipopt/share/pkgconfig: pkg-config --cflags ipopt`\n\
+INCL =  `PKG_CONFIG_PATH=/usr/local/Ipopt/lib64/pkgconfig:/usr/local/Ipopt/lib/pkgconfig:/usr/local/Ipopt/share/pkgconfig: pkg-config --cflags ipopt` $(ADDINCFLAGS)\n\
 \n\
 # The following is necessary under cygwin, if native compilers are used\n\
 CYGPATH_W = echo\n\
