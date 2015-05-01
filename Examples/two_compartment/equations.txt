@@ -1,0 +1,33 @@
+two_compartment
+7,0,0,1,1,1
+#Vs
+(1*(-80-Vs)+9*(Vd - Vs) + 700.0*m0*m0*m0*h0*(55-Vs) + 80*n0*n0*n0*n0*(-90-Vs) + Iinj)/10
+#Vd
+(1*(-80-Vd)+ .01*r0*r0*ghk(Vd)*(2500*exp(-Vd/13.5) - Calcium)*(-1.0) + 750*Calcium*Calcium/(Calcium*Calcium + 100)*(-90-Vd) + 9*(Vs - Vd))/10
+#n
+(0.5*(1+tanh((Vs+35)*.05)) - n0)/ (.1 + .5/2.0*(1.0+tanh(-(Vs+27)*.0333)))
+#m
+(0.5*(1+tanh((Vs+30)*.0526)) - m0)/ .01
+#h
+(0.5*(1+tanh(-(Vs+45)*.071429)) - h0)/(0.1+0*(1.0-tanh(-(Vs+40.5)*.08333)*tanh(-(Vs+40.5)*.08333)) + .75/2.0*(1.0+tanh(-(Vs+40.5)*.083333)))
+#r0
+0.5*(1+tanh((Vd+40)*.05)) - r0
+#Calcium
+.01*.00012*r0*r0*ghk(Vd)*(2500*exp(-Vd/13.5) - Calcium)*(-1.0) + (.55 - Calcium)/33.0
+#obj function
+(VDATA0 - Vs)*(VDATA0 - Vs)
+#states
+Vs
+Vd
+n0
+m0
+h0
+r0
+Calcium
+#parameters (none)
+#data names
+VDATA0
+#stimuli
+Iinj
+#noise
+ghk, 1
