@@ -29,8 +29,8 @@ OBJS = %sminAone_main.o %s\n' % (probl, probl, probl, string))
 if nF == 0:
   f.write('       %sminAone_nlp.o\n' % probl)
 else:
-  f.write('       %s_nlp.o %s\n' % (probl,string))
-  f.write('       myfunctions.o\n')
+  f.write('       %sminAone_nlp.o #%s\n' % (probl,string))
+  #f.write('       myfunctions.o\n')
 f.write('\n\
 # CHANGEME: Additional libraries\n\
 #ADDLIBS =\n\

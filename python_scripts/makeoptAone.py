@@ -53,7 +53,7 @@ tol 1.0e-12\n\
 #mehrotra_algorithm yes\n\
 mu_strategy adaptive\n\
 adaptive_mu_globalization never-monotone-mode\n\
-linear_solver ma57\n\
+linear_solver ma97\n\
 #linear_system_scaling none\n\
 bound_relax_factor 0\n\
 #ma27_pivtol 1.0e-6\n\

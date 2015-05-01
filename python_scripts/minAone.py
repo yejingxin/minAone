@@ -86,8 +86,10 @@ f.write('#include <cmath>\n\
 f.write('#ifndef HAVE_CSTDIO\n\
 #define HAVE_CSTDIO\n\
 # include <cstdio>\n\
-# include <iostream>\n\
-# include <fstream>\n\
+# include <iostream>\n')
+if nF>0:
+    f.write('# include "myfunctions.hpp"\n')
+f.write('# include <fstream>\n\
 # include <string>\n\
 # include <stdlib.h>\n\
 #else\n\
@@ -502,17 +504,17 @@ f.write('    char filename[20];\n\
         for(Index jt=0;jt<Time+1;jt++) {\n\
             for(Index var=0;var<nY;var++) {\n\
                 // Initial conditions for x\n\
-                for(int i=0; i<taskid;i++) x[(Time+1)*var+jt] = rand()*1.0/RAND_MAX*(bounds[var][1]-bounds[var][0])+bounds[var][0];\n\
+                for(int i=0; i<taskid+2;i++) x[(Time+1)*var+jt] = rand()*1.0/RAND_MAX*(bounds[var][1]-bounds[var][0])+bounds[var][0];\n\
                 // Initial conditions for midpoints\n\
                 if(jt<Time) {\n\
-                    for(int i=0; i<taskid;i++) x[(Time+1)*(nY+2*nU)+Time*var+jt] = rand()*1.0/RAND_MAX*(bounds[var][1]-bounds[var][0])+bounds[var][0];  \n\
+                    for(int i=0; i<taskid+2;i++) x[(Time+1)*(nY+2*nU)+Time*var+jt] = rand()*1.0/RAND_MAX*(bounds[var][1]-bounds[var][0])+bounds[var][0];  \n\
 		        }\n\
 		    }\n\
         } // End for loop\n\
         \n\
         for(Index par=0;par<nP;par++) {\n\
             // Initial conditions for p5\n\
-            for(int i=0; i<taskid;i++) x[2*Time*(nY+2*nU)+nY+2*nU+par]=rand()*1.0/RAND_MAX*(bounds[nY+2*nU+par][1]-bounds[nY+2*nU+par][0])+bounds[nY+2*nU+par][0];\n\
+            for(int i=0; i<taskid+2;i++) x[2*Time*(nY+2*nU)+nY+2*nU+par]=rand()*1.0/RAND_MAX*(bounds[nY+2*nU+par][1]-bounds[nY+2*nU+par][0])+bounds[nY+2*nU+par][0];\n\
         }\n\
 	}\n\
     return true;\n\
