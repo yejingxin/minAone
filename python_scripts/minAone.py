@@ -78,6 +78,7 @@ f.write('#include \"%sminAone_nlp.hpp\"\n' % probl)
 f.write('#include <cmath>\n\
 #include <cstdio>\n\
 #include <iostream>\n\
+#include <time.h> \n\
 #include <fstream>\n\
 #include <string>\n\
 #include <stdlib.h>\n\
@@ -86,10 +87,8 @@ f.write('#include <cmath>\n\
 f.write('#ifndef HAVE_CSTDIO\n\
 #define HAVE_CSTDIO\n\
 # include <cstdio>\n\
-# include <iostream>\n')
-if nF>0:
-    f.write('# include "myfunctions.hpp"\n')
-f.write('# include <fstream>\n\
+# include <iostream>\n\
+# include <fstream>\n\
 # include <string>\n\
 # include <stdlib.h>\n\
 #else\n\
@@ -457,69 +456,111 @@ bool %s_NLP::get_starting_point(Index n, bool init_x, Number* x,\n\
   for (Index i=0; i<n; i++) {\n\
         x[i] = 0.0;\n\
       }\n\n' % probu)
-      
-f.write('    char filename[20];\n\
-    FILE *initFILE;\n\
-	sprintf(filename,"D%d_M%d_PATH%d.dat", nY,nM,taskid);\n\
-    if(specs[3+nM+nI] =="1" && (initFILE = fopen(filename,"r") ) ){\n\
+f.write('\nif(beta==0){\n\n\
+      int skipROWS = skip;\n\
+      int ROWS = 2*Time+1;\n\
+      int COLS = nY;\n\
+      srand ((int) time(NULL));\n\
     \n\
-        specs[3+nM+nI] ="2"; // "2" indicates it is not the initial value any more.\n\
-        int tmp1;\n\
-        double tmp2;\n\
-        while (!feof(initFILE)){\n\
-        \n\
-        fscanf(initFILE, "%d %d %lf ", &beta, &tmp1, &tmp2);\n\
-        printf("changed beta in start: %d\\n\\n", beta);\n\
-        for (Index i=0;i<Time;i++) {\n\
-     	    for (Index j=0;j<nY;j++) {\n\
-        	    fscanf(initFILE,"%lf ", &x[j*(Time+1)+i]);\n\
-            }\n\
-      	    for (Index j=0;j<nY;j++) {\n\
-        	    fscanf(initFILE,"%lf ", &x[(nY+2*nU)*(Time+1)+j*Time+i]);\n\
+      double **skipinit = new double* [skipROWS];\n\
+      double **init = new double* [ROWS];\n\
+      for(Index i=0;i<skipROWS;i++) skipinit[i] = new double[COLS];\n\
+      for(Index i=0;i<ROWS;i++) init[i] = new double[COLS];\n\
+      \n\
+      string filename;\n\
+      filename = specs[4+nM+nI];\n\n')
+
+# To start from an initial guess given in a separate data file:
+#  Read in the data file
+temp1 = "%lf"
+f.write('\
+      if (specs[3+nM+nI] =="1")\n\
+      {\n\
+      FILE *initFILE;\n\
+      int ret;\n\
+      initFILE = fopen(filename.c_str(),"r");\n\
+    \n\
+      for(Index jt=0;jt<skip;jt++)\n\
+          {\n\
+	  ret = fscanf (initFILE,"')
+for i in range(nY):
+   f.write('%s ' % temp1)
+f.write('"')
+for i in range(nY):
+   f.write(',&skipinit[jt][%d]' % i)
+f.write(');\n\
+	  if (ret == EOF) break;\n\
+          }\n\
+      for(Index jt=0;jt<2*Time+1;jt++)\n\
+          {\n\
+	  ret = fscanf (initFILE,"')
+for i in range(nY):
+   f.write('%s ' % temp1)
+f.write('"')
+for i in range(nY):
+   f.write(',&init[jt][%d]' % i)
+f.write(');\n\
+	  if (ret == EOF) break;\n\
+          }\n\
+    fclose (initFILE);\n\
+    }\n\n')
+
+# Set the initial starting point into the x[] array, either from
+#  the numbers given in specs.txt or from an initial data file
+
+f.write('  for(Index jt=0;jt<Time+1;jt++) {\n')
+f.write('     for(Index var=0;var<nY;var++) {\n')    
+f.write('       // Initial conditions for x\n')
+f.write('       if (specs[3+nM+nI] == "1")\n\
+                  {\n\
+		  x[(Time+1)*var+jt] = init[2*jt][var];\n\
+		  }\n\
+	        else\n\
+	          {\n\
+		  for(int i=0; i<taskid+rand()%100;i++) x[(Time+1)*var+jt] = (double) rand()*1.0/RAND_MAX*(bounds[var][1]-bounds[var][0])+bounds[var][0];\n\
+		  }\n')
+f.write('       // Initial conditions for midpoints\n')
+f.write('       if(jt<Time) {\n\
+                  if (specs[3+nM+nI] == "1")\n\
+		    {\n\
+		    x[(Time+1)*(nY+2*nU)+Time*var+jt] = init[2*jt+1][var];\n\
 		    }\n\
-        }\n\
-  	    for (Index j=0;j<nY;j++) {\n\
-     	    fscanf(initFILE,"%lf ", &x[j*(Time+1)+Time]);\n\
-        }\n\
-  	    for (Index j=0;j<nP;j++) {\n\
-     	    fscanf(initFILE,"%lf ", &x[(2*Time+1)*(nY+2*nU)+j]);\n\
-        }\n\
-        \n\
-        }//endwhile\n\
-	\n\
-        beta+=delta_beta;\n\
-        for (Index i=0;i<nY;i++) {\n\
-		    bounds[i][3]=pow(alpha,beta)*Rf0[i];\n\
-	    }\n\
-        fclose (initFILE);\n\
-        for(Index i=0;i<Ntotal;i++) solution[i] = x[i];\n\
-    \n\
-    }else if(specs[3+nM+nI] =="2"){\n\
-    \n\
-        for(Index i=0;i<Ntotal;i++) x[i] = solution[i];\n\
-        \n\
-	}else{\n\
-	\n\
-	    specs[3+nM+nI] ="2"; // "2" indicates it is not the initial value any more.\n\
-        for(Index jt=0;jt<Time+1;jt++) {\n\
-            for(Index var=0;var<nY;var++) {\n\
-                // Initial conditions for x\n\
-                for(int i=0; i<taskid+2;i++) x[(Time+1)*var+jt] = rand()*1.0/RAND_MAX*(bounds[var][1]-bounds[var][0])+bounds[var][0];\n\
-                // Initial conditions for midpoints\n\
-                if(jt<Time) {\n\
-                    for(int i=0; i<taskid+2;i++) x[(Time+1)*(nY+2*nU)+Time*var+jt] = rand()*1.0/RAND_MAX*(bounds[var][1]-bounds[var][0])+bounds[var][0];  \n\
-		        }\n\
+		  else\n\
+		    {\n\
+		    for(int i=0; i<taskid+rand()%100;i++) x[(Time+1)*(nY+2*nU)+Time*var+jt] = (double) rand()*1.0/RAND_MAX*(bounds[var][1]-bounds[var][0])+bounds[var][0];\n\
 		    }\n\
-        } // End for loop\n\
-        \n\
-        for(Index par=0;par<nP;par++) {\n\
-            // Initial conditions for p5\n\
-            for(int i=0; i<taskid+2;i++) x[2*Time*(nY+2*nU)+nY+2*nU+par]=rand()*1.0/RAND_MAX*(bounds[nY+2*nU+par][1]-bounds[nY+2*nU+par][0])+bounds[nY+2*nU+par][0];\n\
-        }\n\
-	}\n\
-    return true;\n\
-}   \n\
-\n\n\n\n')
+		  }\n\
+		}\n')
+
+f.write('     for(Index cup=0;cup<2*nU;cup++) {\n')
+f.write('       // Initial conditions for k\n')
+f.write('       x[(Time+1)*(cup+nY)+jt]=bounds[cup+nY][2];\n')
+f.write('       // Initial conditions for midpoints\n')
+f.write('       if(jt<Time) {\n\
+                  x[(Time+1)*(nY+2*nU)+Time*(cup+nY)+jt]=bounds[cup+nY][2];\n\
+	          }\n\
+	      }\n')
+
+f.write('  } // End for loop\n\n')
+
+f.write('     for(Index par=0;par<nP;par++) {\n')
+f.write('     // Initial conditions for p%d\n' % (i+1))
+f.write('     if (specs[3+nM+nI] == "1"){\n\
+					x[2*Time*(nY+2*nU)+nY+2*nU+par]=bounds[nY+2*nU+par][2];\n\
+			  }\n\
+			  else{\n\
+			  		 for(int i=0; i<taskid+rand()%100;i++) x[2*Time*(nY+2*nU)+nY+2*nU+par]=(double) rand()*1.0/RAND_MAX*(bounds[nY+2*nU+par][1]-bounds[nY+2*nU+par][0])+bounds[nY+2*nU+par][0];\n\
+			  }\n\
+              }\n\n')
+f.write('  for(Index i=0;i<ROWS;i++) delete [] init[i];\n\
+   delete [] init;\n') 
+f.write('}\n\
+else{\n\
+	for(Index i=0;i<Ntotal;i++) x[i] = solution[i];\n\
+	}\n')
+
+f.write('  return true;\n\
+}\n\n\n') 
 
 
 
