@@ -17,6 +17,16 @@
 #  generally applicable to any application needing
 #  discretized derivatives of a vector field.
 #
+#  
+#  20 May 2016
+#  Daniel Breen
+#  University of California, San Diego
+#  dlbreen@physics.ucsd.edu
+#  Fixed a bug in subfunc, which creates the Jacobian and 
+#  Hessian terms. Now properly substitutes the values of 
+#  n and m as defined in the examples in myfunctions.cpp.
+#  
+#
 ######################################################
 
 import sympy as sym 
@@ -206,6 +216,7 @@ for i in range(nM):
 sTemp2 = "Fobj.append("
 sTemp2 = sTemp2 + sTemp1 + " + " + sTemp1a + ")"
 exec sTemp2
+
 # Define symbolic vector field
 # This vector field is for the continuous case
 # Add it as a second element of objective function
@@ -259,6 +270,7 @@ for k in range(Fdim):
   sTemp2 = "Ftemp.append((("
   sTemp2 = sTemp2 + sTemp1 + " - (" + sTemp1a + "))*hstep/8.0 + 0.5*Sv[%d] + 0.5*Svp1[%d] - Sv2[%d])**2)" % (k,k,k)
   exec sTemp2
+
 # At this point, Feqns is a list of each discretized equation, with Simpson
 #  followed by Hermite constraint, for each state variable
 # Need to add in the constrains for the coupling midpoint?  That seems unnecessary.
@@ -379,23 +391,31 @@ def subfunc(mystr,myi):
    mytemp = mystr
    Dsearch = re.findall('Derivative\(', mytemp)
    for num in range(len(Dsearch)):
-     jacsearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
-     hessearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
+     jacsearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
+     #jacsearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
+     hessearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
+     #hessearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
      if jacsearch:
-       dervar = jacsearch.group(3)
+          
+       dervar = jacsearch.group(4)
+       #dervar = jacsearch.group(3) 
        var = re.findall('[A-za-z0-9]+\[[0-9]+\]|-?[0-9]*\.?[0-9]+', jacsearch.group(0))
        for i in range(len(var)-1):
          if var[i] == dervar:
+           
            jacnum = i+1
        rep = jacsearch.group(1) + 'jac('
        for i in range(len(var)-1):
          temp = var[i] + ','
          rep += temp
        rep += str(jacnum) +')'
-       mytemp = re.sub('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep,mytemp,1)
+       mytemp = re.sub('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep,mytemp,1)
+#       mytemp = re.sub('D\(([a-z]+)\((-?[0-9]+(\.[0-9]+)?, |[A-Za-z0-9]+\[[0-9]+\], )+(-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep,mytemp,1)
      if hessearch:
-       dervar1 = hessearch.group(2)
-       dervar2 = hessearch.group(4)
+       dervar1 = hessearch.group(4)
+       dervar2 = hessearch.group(6)
+       #dervar1 = hessearch.group(2)
+       #dervar2 = hessearch.group(4)
        hesnum1 = 0
        hesnum2 = 0
        var = re.findall('[A-za-z0-9]+\[[0-9]+\]|-?[0-9]*\.?[0-9]+', hessearch.group(0))
@@ -405,11 +425,12 @@ def subfunc(mystr,myi):
          if var[i] == dervar2:
            hesnum2 = i+1
        rep = hessearch.group(1) + 'hes('
+       
        for i in range(len(var)-2):
          temp = var[i] + ','
          rep += temp
        rep += str(hesnum1) +','+ str(hesnum2)+ ')'
-       mytemp = re.sub('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep, mytemp, 1)
+       mytemp = re.sub('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep, mytemp, 1)
    return mytemp
 #end subfunc
 print "Building objective function strings\n"
@@ -427,6 +448,7 @@ for j in range(len(Feqns)):
   Stemp = subfunc(Stemp,2)
   temp2.append(Stemp)
 strObj.append(temp2)
+
 print "Building objective gradient strings\n"
 # Build objective gradient strings
 strGrad = []
@@ -438,7 +460,6 @@ for jvar in range(len(Sall)):
    temp1.append(Stemp)
 strGrad.append(temp1)
 
-
 for icon in range(len(Feqns)):
    temp1 = []
    for jvar in range(len(Sall)):
@@ -447,6 +468,10 @@ for icon in range(len(Feqns)):
       Stemp = subfunc(Stemp,2)
       temp1.append(Stemp)
    strGrad.append(temp1)
+
+#def sub_user_defined_functions(mystr, func, var):
+     
+
 print "Building Hessian strings\n"
 # Build Hessian strings
 strHes = []
@@ -581,4 +606,3 @@ for i in range(nY+1):
 	 temp2.append(n)
          temp2.append(H)
 	 VHes.append(temp2)
-
