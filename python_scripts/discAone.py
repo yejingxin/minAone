@@ -34,7 +34,7 @@ from sympy import *
 import re
 
 #  Opening and reading the text file with the vector field information
-print "Importing equations.txt\n"
+print("Importing equations.txt\n")
 file = open('equations.txt','r')
 temp=[]  # Array to hold equations.txt information
 for line in file:
@@ -88,20 +88,21 @@ Lvars = []
 for k in range(nY):
    Lvars.append(h[k+3+nY])
 
+Lcouple = []
+for k in range(nU):
+    Lcouple.append(h[k+3+nY+nY])
+
 Lparams = []
 for k in range(nP):
-   Lparams.append(h[k+3+nY+nY])
+   Lparams.append(h[k+3+nY+nY+nU])
 
-Lcouple = []
 Ldata = []
-for k in range(nU):
-    Lcouple.append(h[k+3+nY+nY+nP])
-    Lcouple.append('d'+ h[k+3+nY+nY+nP])
 for k in range(nM):
-    Ldata.append(h[k+3+nY+nY+nP+nU])
+    Ldata.append(h[k+3+nY+nY+nU+nP])
+
 Lstimuli = []
 for k in range(nI):
-    Lstimuli.append(h[k+3+2*nY+nP+nU+nM])
+    Lstimuli.append(h[k+3+2*nY+nU+nP+nM])
 
 # Import function names as strings
 Funcstr = []
@@ -114,7 +115,7 @@ for k in range(nF):
 #Lcouple.reverse()
 Fdim = len(Feqnstr)
 Pdim = len(Lparams)
-print "Making symbols\n"
+print("Making symbols\n")
 #  Make symbols using sympy module
 #  Make symbols for next time and mid time
 #    for all but parameters
@@ -145,14 +146,9 @@ for i in range(nM):
   Sdp1.append(sym.Symbol(Ldata[i]+'p1'))
   Sd2.append(sym.Symbol(Ldata[i]+'mid'))
 for i in range(nU):
-  Sk.append(sym.Symbol(Lcouple[2*i]))
-  Skp1.append(sym.Symbol(Lcouple[2*i]+'p1'))
-  Sk2.append(sym.Symbol(Lcouple[2*i]+'mid'))
-for i in range(nU):
-  Sk.append(sym.Symbol(Lcouple[2*i+1]))
-  Skp1.append(sym.Symbol(Lcouple[2*i+1]+'p1'))
-  Sk2.append(sym.Symbol(Lcouple[2*i+1]+'mid'))
-# Sk includes the coupling and the derivative of the coupling: k1,k1d,k2,k2d,etc ...
+  Sk.append(sym.Symbol(Lcouple[i]))
+  Skp1.append(sym.Symbol(Lcouple[i]+'p1'))
+  Sk2.append(sym.Symbol(Lcouple[i]+'mid'))
 for i in range(nI):
   Si.append(sym.Symbol(Lstimuli[i]))
   Sip1.append(sym.Symbol(Lstimuli[i]+'p1'))
@@ -163,20 +159,16 @@ for i in range(len(Lvars)):
   Smod.append(sym.Symbol(Lvars[i]))
   Smod.append(sym.Symbol(Lvars[i]+'p1'))
 for i in range(nU):
-  Smod.append(sym.Symbol(Lcouple[2*i]))
-  Smod.append(sym.Symbol(Lcouple[2*i]+'p1'))
-for i in range(nU):
-  Smod.append(sym.Symbol(Lcouple[2*i+1]))
-  Smod.append(sym.Symbol(Lcouple[2*i+1]+'p1'))
+  Smod.append(sym.Symbol(Lcouple[i]))
+  Smod.append(sym.Symbol(Lcouple[i]+'p1'))
 for i in range(len(Lvars)):
   Smod.append(sym.Symbol(Lvars[i]+'mid'))
 for i in range(nU):
-  Smod.append(sym.Symbol(Lcouple[2*i]+'mid'))
-for i in range(nU):
-  Smod.append(sym.Symbol(Lcouple[2*i+1]+'mid'))
+  Smod.append(sym.Symbol(Lcouple[i]+'mid'))
 for i in range(len(Lparams)):
   Smod.append(sym.Symbol(Lparams[i]))
 Sall = Sv + Sk + Svp1 + Skp1 + Sv2 +  Sk2 + Sp
+
 # Make symbols for functions
 Sf = []
 for i in range(nF):
@@ -184,7 +176,7 @@ for i in range(nF):
 
 hstep = sym.Symbol("hstep")
 
-print "Defining symbolic objective function\n"
+print("Defining symbolic objective function\n")
 # Define symbolic objective function
 Fobj = []
 sTemp1 = Fobjstr[0]
@@ -215,7 +207,7 @@ for i in range(nM):
   sTemp1a = sTemp1a.replace(Ldata[i],sTemp2a)
 sTemp2 = "Fobj.append("
 sTemp2 = sTemp2 + sTemp1 + " + " + sTemp1a + ")"
-exec sTemp2
+exec(sTemp2)
 
 # Define symbolic vector field
 # This vector field is for the continuous case
@@ -266,10 +258,10 @@ for k in range(Fdim):
     sTemp1b = sTemp1b.replace(Funcstr[i],sTemp2)
   sTemp2 = "Ftemp.append((("
   sTemp2 = sTemp2 + sTemp1 + " + " + sTemp1a + " + 4*(" + sTemp1b + "))*hstep/6.0 + Sv[%d]- Svp1[%d])**2)" % (k,k)
-  exec sTemp2
+  exec(sTemp2)
   sTemp2 = "Ftemp.append((("
   sTemp2 = sTemp2 + sTemp1 + " - (" + sTemp1a + "))*hstep/8.0 + 0.5*Sv[%d] + 0.5*Svp1[%d] - Sv2[%d])**2)" % (k,k,k)
-  exec sTemp2
+  exec(sTemp2)
 
 # At this point, Feqns is a list of each discretized equation, with Simpson
 #  followed by Hermite constraint, for each state variable
@@ -284,9 +276,8 @@ for i in range(nY):
 
 dict1 = {0:"Xval",1:"Xvalp1",2:"Xval2"}
 dict2 = {0:"K11val",1:"K11valp1",2:"K11val2"}
-dict3 = {0:"dK11val",1:"dK11valp1",2:""}
-dict4 = {0:"Xdval",1:"Xdvalp1",2:"Xdval2"}
-dict5 = {0:"Ival",1:"Ivalp1",2:"Ival2"}
+dict3 = {0:"Xdval",1:"Xdvalp1",2:"Xdval2"}
+dict4 = {0:"Ival",1:"Ivalp1",2:"Ival2"}
 
 # SUBVARS function turns the output into c++ code.  Modified from discretize.py
 #  to account for plus-one and midpoints
@@ -329,58 +320,44 @@ def subvars(mystr,myi):
        mytemp = mytemp.replace(Sfind,Srep)
 
      for j in range(len(Sk)):
-       if (j % 2 == 0):
          if (n == 0):
-           Srep = dict2[n] + "[%d]" % (j/2)
+           Srep = dict2[n] + "[%d]" % (j)
            Sfind = Lcouple[j]
            mytemp = mytemp.replace(Sfind,Srep)
          elif (n == 1):
-           Srep = dict2[n] + "[%d]" % (j/2)
+           Srep = dict2[n] + "[%d]" % (j)
            Sfind = Lcouple[j] + "p1"
            mytemp = mytemp.replace(Sfind,Srep)
          elif (n == 2):
-           Srep = dict2[n] + "[%d]" % (j/2)
-           Sfind = Lcouple[j] + "mid"
-           mytemp = mytemp.replace(Sfind,Srep)
-       elif (j % 2 == 1):
-         if (n == 0):
-           Srep = dict3[n] + "[%d]" % (j/2)
-           Sfind = Lcouple[j]
-           mytemp = mytemp.replace(Sfind,Srep)
-         elif (n == 1):
-           Srep = dict3[n] + "[%d]" % (j/2)
-           Sfind = Lcouple[j] + "p1"
-           mytemp = mytemp.replace(Sfind,Srep)
-         elif (n == 2):
-           Srep = dict3[n] + "[%d]" % (j/2)
+           Srep = dict2[n] + "[%d]" % (j)
            Sfind = Lcouple[j] + "mid"
            mytemp = mytemp.replace(Sfind,Srep)
  
      for j in range(len(Sd)):
        if (n == 0):
-         Srep = dict4[n] + "[%d]" % j
+         Srep = dict3[n] + "[%d]" % j
          Sfind = Ldata[j]
          mytemp = mytemp.replace(Sfind,Srep)
        elif (n == 1):
-         Srep = dict4[n] + "[%d]" % j
+         Srep = dict3[n] + "[%d]" % j
          Sfind = Ldata[j] + "p1"
          mytemp = mytemp.replace(Sfind,Srep)
        elif (n == 2):
-         Srep = dict4[n] + "[%d]" % j
+         Srep = dict3[n] + "[%d]" % j
          Sfind = Ldata[j] + "mid"
          mytemp = mytemp.replace(Sfind,Srep)
 
      for j in range(len(Si)):
        if (n == 0):
-         Srep = dict5[n] + "[%d]" % j
+         Srep = dict4[n] + "[%d]" % j
          Sfind = Lstimuli[j]
          mytemp = mytemp.replace(Sfind,Srep)
        elif (n == 1):
-         Srep = dict5[n] + "[%d]" % j
+         Srep = dict4[n] + "[%d]" % j
          Sfind = Lstimuli[j] + "p1"
          mytemp = mytemp.replace(Sfind,Srep)
        elif (n == 2):
-         Srep = dict5[n] + "[%d]" % j
+         Srep = dict4[n] + "[%d]" % j
          Sfind = Lstimuli[j] + "mid"
          mytemp = mytemp.replace(Sfind,Srep)
      n = n - 1
@@ -433,14 +410,14 @@ def subfunc(mystr,myi):
        mytemp = re.sub('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep, mytemp, 1)
    return mytemp
 #end subfunc
-print "Building objective function strings\n"
+print("Building objective function strings\n")
 # Build objective function strings
 #  In format (data,model) where model is an array
 strObj = []
 Stemp = str(Fobj[0])
 Stemp = subvars(Stemp,2)
 Stemp = subfunc(Stemp,2)
-strObj.append(Stemp)
+strObj.append(Stemp) 
 temp2 = []
 for j in range(len(Feqns)):
   Stemp = str(Feqns[j])
@@ -449,7 +426,7 @@ for j in range(len(Feqns)):
   temp2.append(Stemp)
 strObj.append(temp2)
 
-print "Building objective gradient strings\n"
+print("Building objective gradient strings\n")
 # Build objective gradient strings
 strGrad = []
 temp1 = []
@@ -472,7 +449,7 @@ for icon in range(len(Feqns)):
 #def sub_user_defined_functions(mystr, func, var):
      
 
-print "Building Hessian strings\n"
+print("Building Hessian strings\n")
 # Build Hessian strings
 strHes = []
 temp1=[]
@@ -480,10 +457,10 @@ for jvar in range(len(Smod)):
     temp2 = []
     for kvar in range(jvar+1):
     #for kvar in range(len(Smod)):
-	Stemp = str(sym.diff(sym.diff(Fobj[0],Smod[jvar]),Smod[kvar]))
-	Stemp = subvars(Stemp,2)
+        Stemp = str(sym.diff(sym.diff(Fobj[0],Smod[jvar]),Smod[kvar]))
+        Stemp = subvars(Stemp,2)
         Stemp = subfunc(Stemp,2)
-	temp2.append(Stemp)
+        temp2.append(Stemp)
     temp1.append(temp2)
 strHes.append(temp1)
 
@@ -494,7 +471,7 @@ for icon in range(len(Feqns)):
       temp2 = []
       for kvar in range(jvar+1):
       #for kvar in range(len(Smod)):
-	 Stemp = str(sym.diff(sym.diff(Feqns[icon],Smod[jvar]),Smod[kvar]))
+         Stemp = str(sym.diff(sym.diff(Feqns[icon],Smod[jvar]),Smod[kvar]))
          Stemp = subvars(Stemp,2)
          Stemp = subfunc(Stemp,2)
          temp2.append(Stemp)
@@ -504,7 +481,7 @@ for icon in range(len(Feqns)):
 # Now, remove all non-zero entries
 # Fill out objective gradient
 # Do data part first
-print "Filling out objective gradient non-zero elements\n"
+print("Filling out objective gradient non-zero elements\n")
 VObj = []
 temp2 = []
 for j in range(len(Sall)):
@@ -531,7 +508,7 @@ VObj.append(temp2)
 # Nothing needed for VJac, since it does not exist
 # Fill out Hessian vector, keeping track of the index counter
 #  for specific row/column combinations
-print "Filling out Hessian non-zero elements\n"
+print("Filling out Hessian non-zero elements\n")
 from numpy import *
 # Set up indexing for VHes
 # Hesindex will keep track of which elements are used
@@ -541,13 +518,13 @@ Hesindex = zeros([len(Sall),len(Sall)], integer)
 Hessize = zeros([len(Sall),len(Sall)], character)
 for i in range(len(Sall)):
    for j in range(i+1):
-       if i > (3*(nY+2*nU)-1):
-          if j > (3*(nY+2*nU)-1):
+       if i > (3*(nY+nU)-1):
+          if j > (3*(nY+nU)-1):
             # Parameter/parameter derivatives only have 1 element 
              Hessize[i][j] = 's'
        # Two instances where derivative have N+1 elements
        # First instance is x/par derivatives
-          elif j < (2*(nY+2*nU)):
+          elif j < (2*(nY+nU)):
              if j % 2 == 0:
                 Hessize[i][j] = 'l'
              else:
@@ -556,7 +533,7 @@ for i in range(len(Sall)):
              Hessize[i][j] = 'm'
        # Second instance is x/x, x/y derivatives since these
        #  include xp1/xp1 and xp1/yp1 etc ... terms
-       elif i < (2*(nY+2*nU)):
+       elif i < (2*(nY+nU)):
           if i % 2 == 0:
              if j % 2 == 0:
                 Hessize[i][j] = 'l'
@@ -575,12 +552,12 @@ for i in range(nY+1):
   for j in range(len(Smod)):
    for k in range(j+1):
      H = strHes[i][j][k]
-     if j < (3*(nY+2*nU)):
+     if j < (3*(nY+nU)):
          n = 0
          if H != '0':
              temp1 = []
              Hesindex[j][k] = -1
-             if j < (2*(nY+2*nU)):
+             if j < (2*(nY+nU)):
                if j%2 != 0:
                 if k%2 != 0: 
                   Hesindex[j][k]=0
@@ -596,13 +573,13 @@ for i in range(nY+1):
        if H != '0':
          temp2 = []
          Hesindex[j][k] = -1
-         if k < (2*(nY+2*nU)):
+         if k < (2*(nY+nU)):
            if k%2 != 0:
               Hesindex[j][k]=0
               n = 1
-	 temp2.append(i)
-	 temp2.append(j)
-	 temp2.append(k)
-	 temp2.append(n)
+         temp2.append(i)
+         temp2.append(j)
+         temp2.append(k)
+         temp2.append(n)
          temp2.append(H)
-	 VHes.append(temp2)
+         VHes.append(temp2)

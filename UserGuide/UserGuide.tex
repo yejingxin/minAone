@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 %Gummi|065|=)
-\title{\textbf{Annealing code \texttt{minAone} User Guide}}
-\author{Jingxin Ye}
+\title{\textbf{Annealing code \texttt{minAone} User Guide} 2.0}
+\author{Jingxin Ye and Nirag Kadakia}
 \date{\today}
 \usepackage{graphicx}
 \usepackage[numbers]{natbib}
@@ -24,11 +24,11 @@
 \tableofcontents
 \newpage
 \section{About \texttt{minAone}}
-The annealing code \texttt{minAone} described in this document is used for calculating action levels of dynamical systems. The code is developed as an extention of \texttt{minAzero} written by Bryan Toth and Chris Knowlton. That is where the name \texttt{minAone} comes from. In another aspect, following the lowest action level $A_0$, $A_1$ represents the second lowest one, which is an interesting quantity we care about and has significant application in statistical data assimilation.
+The annealing code \texttt{minAone} described in this document is used for calculating action levels of the Gaussian error action for the estimation of dynamical systems. The code is developed as an extention of \texttt{minAzero} written by Bryan Toth and Chris Knowlton (hence the the uninspired name \texttt{minAone}). In another aspect, following the lowest action level $A_0$, $A_1$ represents the second lowest one, which is an interesting quantity we care about and has significant application in statistical data assimilation.
 \section{Problem Statement}
 Given a dynamical system modeled by $D$-dimensional discrete map
 \[{x_a}(n+1)=f_a(\mathbf{x}(n)),~~a=1,\dots,D\]
-the probability distribution of its states can be expressed as $P(X|Y)=\exp(-A_0)$, when $L$-dimensional obersations $Y$ are present.  If one assumes both measurement noises and model error are independent and gaussian, the action $A_0$ has the format of
+the probability distribution of its states can be expressed as $P(X|Y)=\int \mathcal {D}X \exp(-A_0[X])$, when $L$-dimensional obersations $Y$ are present.  If one assumes both measurement noises and model error are independent and gaussian, the action $A_0$ in discrete time has the format of
 \begin{align}
 A_0(X) = &\sum_{n=0}^m\, \frac{R_m(n)}{2} \sum_{l=1}^L [x_l(n) - y_l(n)]^2 +  \frac{R_f}{2} \sum_{n=0}^{m-1} \sum_{a=1}^D[x_a(n+1) - f_a(\mathbf{x}(n))]^2 .
 \label{eq:actionform}
@@ -117,7 +117,7 @@ minAone is a python script used to write C++ code and compiler instructions usin
 	-Writes settings file for IPOPT
 \end{itemize}
 
-These files can be put in /usr/local/sbin for ease of use
+These files can be put in /usr/local/sbin for ease of use.
 
 \subsection*{Modify makemakeAone.py}
 The Makefile compiles C ++ object files and links them with the installed IPOPT libraries, in order to
@@ -144,56 +144,139 @@ reinstalled for whatever reason.
 \end{itemize}
 \pagebreak
 \section{Running the Code}
-minAone uses two text documents (along with any needed data files) as input, equations.txt and specs.txt.  Once these are filled
-\\
-\bigskip
-\\
+minAone uses as input a) any needed data files containing measurement or stimulus data, and b) two additional documents, {\texttt{equations.txt} and \texttt{specs.txt}.  
+\\ \\
 {\bf equations.txt} contains information on the model and is used once for generating the needed cpp and hpp files for the run.  The file should be written as described below in this order.
 
 \begin{itemize}
 \item The first line is the problem name, this name will be used to name the resulting executable.
-\item The second line tells minAzero how many dynamical variables, parameters, coupling terms, stimuli, functions, and measurements there are, in that order as a comma delimited list.  It is essential that these numbers are accurate as minAzero uses this to know how many lines to read for each component of the code.
+\item The second line tells minAzero how many dynamical variables, parameters, coupling terms, stimuli, functions, and measurements there are, in that order as a comma delimited list. 
 
 \item A list of every differential equation.
 
 \item The measurement term of the cost function.  A penalty term for coupling terms is suggested as any coupling to measurements is not present in physical systems.
 
 \item The names of all the variables.  These must be the same as used in the differential equations and should be multiple letters/and or numbers such that variable name is contained in any other name or common function.
-\item The names of parameters, names of couplings, names of data, and names of stimuli, in that order.  Again use fully unique names.
+\item The names of parameters, names of control variables (these are time-dependent variables over which the search is performed but for which no explicit dynamical equations are given; one may also think of them as time-dependent parameters), names of data, and names of stimuli, in that order.  Again use fully unique names.
 \item Function names and number of arguments of that function separated by a comma.  Use a function if there is some component of the dynamics with a removable singularity or other difficult numerical object that requires an alternative local definition.
-\item Functions will require an additional file 'myfunctions.cpp' containing the function definition along with its jacobian and hessian (an example of this is included)
+\item Functions will require an additional file 'myfunctions.cpp' containing the function definition along with its first and second derivatives. These allow for piecewise functions, removable singularities, etc. An example of this is given.
 \end{itemize}
 \bigskip
 \pagebreak
-{\bf specs.txt} contains run specific information such as file names, variable bounds, and problem length.  This file can be edited without recompiling the code.
+{\bf specs.txt} contains run specific information such as file names, variable bounds, and problem length.  This file can be edited without recompiling the code. Depending on the format of the input files (observations, initial conditions and stimuli), and the desired format of the output, \texttt{specs.txt} fies vary in their length. Here we specify {\bf  in detail} the required information, in the order it is to appear in \texttt{specs.txt}.
+
+  In the following, nY refers to the number of state variables, nM to the number of measured variables, nI to the number of stimuli, nU to the number of controls and nP to the number of parameters.
 
 \begin{itemize}
-\item First line is the number of full steps the code will use.  Because the code is compiled using a midpoint method, the actual problem length will double this plus one.
-\item Second line is the number of lines in each input file to skip.  This allows for the code to start at any point in a long data set.
-\item Third line is double the time step of the data.  Again since a midpoint method is used, the time step is for a whole step - which includes two points.
-\item If you wish to start at a non constant guess, you can put a 1 followed by a line with an initial condition file.  This file should have one column for each state.  If you do not want to include an initial condition file, use 0
-\item One line for each of the measured data file names.  Each file should be a single column.
-\item One line for each of the stimulus data file names.  Each file should be a single column.
-\item For each variable, the lower bound, upper bound, and RF0 value separated by commas.
-\item For each parameter a lower bound, upper bound
-\item One line for annealing settings, alpha, incresement of beta and maximum beta separated by commas
+
+\item {\bf Line 1} number of discrete timesteps isteps the code will use.  {\it Importantly}, because the code is compiled using a midpoint method, the actual problem length will double this plus one. If your data file is $N$ time points in length, this value should be $N/2$.
+\item {\bf Line 2} number of lines in each input file to skip.  This allows for the code to start at any point in a long data set. Note that this same amount of data will be skipped in initial condition and stimulus files as well.
+\item {\bf Line 3} double the time step of the data. Again, since a midpoint method is used, this time step is for a whole step - which includes two points. If your data is sampled at $dt = 0.05$, this value should be $0.1$.
+\item {\bf Line 4 and following several lines} Line 4 is extremely important; it indicates the format of the input files. The only accepted values are  either 0, 1, 2, or 3. 
+
+
+\item[$\rightarrow$] {\bf 0}: You do not have an initial guess for estimated trajectory; it will be chosen uniformly at random from the dynamical range of the state variables and is seeded by the task ID for repeatability. Your observation data is saved in individual files, each of a single column indicating the value of the observation at successive times spaced by $dt$. Stimulus files are also saved invidually in this same format. After line 4, you will have nM lines for the file path of each observation, and nI lines for that of each stimulus. For example, you have 10 state variables, of which 2 are measured, and 1 stimulus file. Lines 4-7 may read:
+
+\begin{verbatim}
+0
+./measuredVoltage.dat
+./measuredCa.dat
+./injectedCurrent.dat
+\end{verbatim}
+
+\item[$\rightarrow$] {\bf 1}: Same as {\bf 0}`, except you {\bf do} have an initial guess for the estimated trajectory. This guess is saved in a file of nY columns and $N$ rows, plus nP values at the end of the file for the parameters. Equivalently, the data can be saved as a single column, keeping in mind that the inner loop is over nY while the outer loop is time, with the parameter guesses added as the last nP rows. Also, keep in mind that if data is being skipped (second line in specs is not zero), then the same number of rows will be skipped from this file. 
+
+The initial guess file is written in Line 5 of \texttt{specs.txt}. The following nM + nI lines are for the observation and stimulus data file paths, as in the previous case. For example:
+
+\begin{verbatim}
+1
+./initialization.dat
+./measuredVoltage.dat
+./measuredCa.dat
+./injectedCurrent.dat
+\end{verbatim}
+
+
+\item[$\rightarrow$] {\bf 2} You do not have an initial guess for estimated trajectory. Further, you have {\bf many} datasets in appropriately indexed files. For example, you have 25 different sets of observed data, labeled \texttt{observations0.txt}, \texttt{observations1.txt}, ..., \texttt{observations24.txt}; each of these files has the data of {\it all} measured variables (in the previous cases, each column was a separate file). In addition, each data set was generated using a distinct stimulus, \texttt{stimulus0.txt}, ..., \texttt{stimulus24.txt}. Finally, you want to run 1000 estimations for {\it each} data set. This tag allows you to run all of this from a single \texttt{specs.txt} file. 
+
+Note that your observation files must have as many columns as variables, nY, {\it not} measurements, nM. Thus, if only nM = 2 out of nY = 5 variables are measured, the first 2 columns must be these measured data, while the last 3 columns must be composed of dummy data. For the stimulus files, the number of columns is nI, as expected. 
+
+With these datasets, specs is written in the following way. Line 5 is the number of desired runs per dataset. Line 6 is the file extension for your data. Line 7 is the prefix of the data file path, while  Line 8 is the prefix for the stimulus file path. Thus, in the example given above, Lines 4-8 are the following: 
+
+\begin{verbatim}
+2 
+1000 
+txt 
+./observations 
+./stimulus  
+\end{verbatim}
+
+The choice of data set and initial guess are made by taking the task ID modulo Line 5. Thus, in this example task IDs 0 - 999 will produce 1000 estimations using \texttt{observations0.txt} and \texttt{stimulus0.txt}, while task IDs 1000-1999 will produce 1000 estimations using \texttt{observations1.txt} and \texttt{stimulus1.txt}, using the {\it same} initial conditions as the first set. That is, task ID 525 and 1525 are initialized with the exact same guess since they are both seeded with 525 (1525 mod 1000 = 525 mod 1000 = 525). 
+
+Finally, there is one special case: when Line 5 equals 0. In this case, all observations and stimuli are still in a single data file, but now you do not have multiple indexed datasets. For example, you have a single data file of \texttt{twindata.dat} and stimulus file \texttt{current.dat}. Then Lines 4-8 should read:
+
+\begin{verbatim}
+2
+0 
+dat 
+./twindata
+./current
+\end{verbatim}
+
+In this case, there is only 1 dataset, so the task ID will correspond directly to the initializating guess. 
+
+\item[$\rightarrow$] {\bf 3} This last case is identical to {\bf 2} except that an initial data file is provided, and must be indexed. Using the previous example, we may have 25 data sets, of which we intend to do 1000 estimations each, but now we want to initialize each of these estimations manually. Say the initializing files are initdata0.dat, initdata1.dat, ..., initdata999.dat. Then our specs file would be similar to the previous case, with an extra line put after Line 6 which gives the initializations:
+
+\begin{verbatim}
+3
+1000 
+txt
+./initdata 
+./observations 
+./stimulus  
+\end{verbatim}
+
+As in the previous case, if Line 5 is set to 0, you only need 1 initial data file, unindexed, say initialdata.txt:
+
+\begin{verbatim}
+3
+0
+txt
+./initialdata 
+./twindata 
+./current 
+\end{verbatim}
+
+\item {\bf The next nY lines} For each variable, list the lower bound, upper bound, and RF0 value separated by commas.
+\item {\bf The next nU lines} For each control, a lower bound, upper bound, and initialializing value for the control, separated by commas.
+\item {\bf The next nP lines} For each parameter, a lower bound and upper bound, separated by commas.
+\item {\bf Next line} The annealing settings: alpha, increment of beta, and maximum beta, separated by commas
+\item {\bf Next line, optional} A tag indicating how the data will be saved; values can be 0, 1, -1, 2, or -2. If Line 4 equals 0 or 1, the data is saved to a file like \texttt{D5\_M3\_IC2.dat}, where the number after ``D'' is nY, that after ``M'' is nM, and that after ``IC'' is the task ID. If Line 4 equals 2 or 3, the data is saved to a file like \texttt{D5\_M3\_PATH15\_IC23.dat} where the number after ``PATH'' is the relevant data set (0 to 24 in the example above), while the number after ``IC'' is the initialization, found by task ID modulo Line 5 (If Line 5 is 0, the file is saved in the format \texttt{D5\_M5\_IC2.dat}).
+
+\item[$\rightarrow$] {\bf 0}: This is the default value if this line is omitted. Data for each beta value is saved by row. The first 3 columns are beta, exitflag, and action value. Exit flags can be found in the IPOPT documentation. The remaining values in each row are the estimated trajectory values, (inner loop over the state variables, outer loop over time), with the parameter estimates appended at the end. 
+
+\item[$\rightarrow$] {\bf -1}: Same as (0), but only the estimated trajectory for the {\it final} beta value is saved; the file has only one row. This may help save space when running a large batch of runs, in which one is only interested in the final trajectory.
+
+\item[$\rightarrow$] {\bf 1}: Same as (-1), except the first three values (beta, exitflag, and action value) are dropped. This format is in the correct format if one wants to use this file as an initial data file for a subsequent estimation (Note: it does not account for skipped data, however).
+
+\item[$\rightarrow$] {\bf 2}: The format is same as (0), but the final values of the control variables, if used, are also saved to file (the inner loop is over nY + nU).
+
+\item[$\rightarrow$] {\bf -2}: Same as (2), but only data for the final beta value is saved.
+
 \end{itemize}
+
+
+
 Once everything is filled out and all data files are present, you can run the python scripts:
 \begin{verbatim}
 $ minAone.py
 $ make
-$ ./(problem_name)_cpp
+$ ./(problem_name)_cpp taskID
 \end{verbatim}
-If data files are missing or too short, the code will segfault.  The output file contains annealing result for one path named like \texttt{D5\_M1\_PATH0.dat}.  Each line of  \texttt{D5\_M1\_PATH0.dat} contains the optimal path at different values of \texttt{beta}. The first three numbers are beta exitflag and action value, respectively. Exitflag can be 0 or 1. 1 means IPopt routines find the optimal path and 0 means it fails. The rest numbers represent the optimal path.
-\begin{verbatim}
-beta exitflag action_value 
-optimal_path[x1(0) x2(0) x3(0) x4(0) x5(0)  x1(1) x2(1) x3(1) 
-x4(1) x5(1) ... x1(NT) x2(NT) x3(NT) x4(NT) x5(NT)
- p(1) p(2) ... p(NP)]
-\end{verbatim}
+where taskID is a nonnegative integer specifying the task ID. If data files are missing or too short, or if specs is filled out incorrectly, the code will segfault.
 
 \section{Run in Parallel}
-One excute \texttt{(problem\_name)\_cpp} can obtain the result for only one random initial path.
+One execution of \texttt{(problem\_name)\_cpp} can obtain the result for only one random initial path.
 To explore the landscape of action $A_0$, we need to start from different random paths and each of them will converge to different local minima. Since all those paths are indenpendent from each other, it is easy to implement the calculation in parallel using array job.
 
 Here we give a example submission scripts on ccom-boom cluster
@@ -211,116 +294,377 @@ Here we give a example submission scripts on ccom-boom cluster
 #$ -q batch.q
 ./problem_name_cpp $SGE_TASK_ID
 \end{verbatim}
-Each path will be stored in individual file with the name like \texttt{D5\_M1\_PATH0.dat, D5\_M1\_PATH2.dat,...,D5\_M1\_PATH100.dat}.
+
+Each path will be stored in individual file with the name like \texttt{D5\_M1\_IC0.dat}, \texttt{D5\_M1\_IC1.dat}, ..., etc., if using a single dataset, or \texttt{D5\_M1\_PATH0\_IC0.dat}, \texttt{D5\_M1\_PATH0\_IC1.dat}, ..., \texttt{D5\_M1\_PATH0\_IC100.dat}, ..., \texttt{D5\_M1\_PATH50\_IC0.dat}, ..., \texttt{D5\_M1\_PATH50\_IC100.dat} if using multiple datasets. 
+
 \section{Examples}
-Two examples are provided: the first one is Lorenz96 D=5 to show the basic settings of \texttt{equations.txt} and \texttt{specs.txt}. And the other example is NaKL to show how to include external stimuli in \texttt{equations.txt} and \texttt{specs.txt}.
-\subsection{Lorenz96 D=5}
-\paragraph{Lorenz96 D=5 Vector Field}
+
+Four examples are provided:
+
+\begin{enumerate}
+\item Lorenz96 D=10 to show the basic settings of \texttt{equations.txt} and \texttt{specs.txt}. 
+\item Lorenz96 D=10 with many sets of observations to show how to incorporate multiple datasets (Line 4 equals 2 or 3).
+\item Lorenz96 D=10 with synchronizing control terms.
+\item NaKL neuron model to show how to include external stimuli in \texttt{equations.txt} and \texttt{specs.txt}.
+\item Multi-compartment neuron model to show how to include externally-defined functions in \texttt{equations.txt}.
+\end{enumerate}
+
+%%         L96 single data
+
+\subsection{Lorenz96 D=10 (single data set)}
+\paragraph{\underline{Vector field}}
 \begin{align*}
-\frac{dx_1}{dt}&= x_5(x_2-x_4)-x_1+f\\
-\frac{dx_2}{dt}&= x_1(x_3-x_5)-x_2+f\\
-\frac{dx_3}{dt}&= x_2(x_4-x_1)-x_3+f\\
-\frac{dx_4}{dt}&= x_3(x_5-x_2)-x_4+f\\
-\frac{dx_5}{dt}&= x_4(x_1-x_3)-x_5+f
+\frac{dx_1}{dt}&= x_{10}(x_2-x_9)-x_1+f \qquad \qquad \frac{dx_2}{dt}= x_1(x_3-x_{10})-x_2+f\\
+\frac{dx_3}{dt}&= x_2(x_4-x_1)-x_3+f \qquad \qquad \frac{dx_4}{dt}= x_3(x_5-x_2)-x_4+f\\
+\frac{dx_5}{dt}&= x_4(x_6-x_3)-x_5+f \qquad \qquad  \frac{dx_6}{dt}= x_5(x_7-x_4)-x_6+f\\
+\frac{dx_7}{dt}&= x_6(x_8-x_5)-x_7+f \qquad \qquad \frac{dx_8}{dt}= x_7(x_9-x_6)-x_8+f\\
+\frac{dx_9}{dt}&= x_8(x_{10}-x_7)-x_9+f  \qquad \qquad  \frac{dx_{10}}{dt} = x_9(x_1-x_8)-x_{10}+f
 \end{align*}
-\paragraph{Lorenz96 D=5 equations.txt}
+\paragraph{\underline{equations.txt}}
 \begin{verbatim}
 # Problem Name
 lorenz96
 # nY,nP,nU,nI,nF,nM
-5,1,0,0,0,1
-# equations
-yy5*(yy2-yy4)-yy1+FF1
-yy1*(yy3-yy5)-yy2+FF1
+10,1,0,0,0,4
+# Dynamical equations
+yy9*(yy1-yy8)-yy0+FF1
+yy0*(yy2-yy9)-yy1+FF1
+yy1*(yy3-yy0)-yy2+FF1
 yy2*(yy4-yy1)-yy3+FF1
 yy3*(yy5-yy2)-yy4+FF1
-yy4*(yy1-yy3)-yy5+FF1
-# Objective/Cost function
-4*(data1-yy1)*(data1-yy1)
-# variable names
+yy4*(yy6-yy3)-yy5+FF1
+yy5*(yy7-yy4)-yy6+FF1
+yy6*(yy8-yy5)-yy7+FF1
+yy7*(yy9-yy6)-yy8+FF1
+yy8*(yy0-yy7)-yy9+FF1
+# Measurement terms of cost function 
+(data0-yy0)*(data0-yy0) + (data1-yy1)*(data1-yy1) + (data2-yy2)*(data2-yy2) 
++ (data3-yy3)*(data3-yy3)
+# Variable names
+yy0
 yy1
 yy2
 yy3
 yy4
 yy5
-# parameter names
+yy6
+yy7
+yy8
+yy9
+# Control names (none)
+# Parameter names
 FF1
-# data names
+# Data names
+data0
 data1
-# stimuli names
+data2
+data3
+# Stimuli names (none)
+# External functions (none)
 \end{verbatim}
-\paragraph{Lorenz96 D=5 specs.txt}
+
+
+\paragraph{\underline{specs.txt}}
 \begin{verbatim}
-# Includes the problem length
+# N/2 (total data is 161 steps, at dt = 0.01)
 80
-# How much data to skip
-# In case you do not want to start at the beginning of the data file
+# Skipped data 
 100
-# Time step - this is twice the time step of the data,
-# since the data includes time and midpoints.
+# Twice the timestep of the data file
 0.02
-# Data File names - input
-x1.dat
-# Data File name - stimuli
-# No stimuli for this problem
-# Boundary & initial conditions
-# 0 for no initial data file, 1 for data file
-# A data file must include values for all state variables
-# at each time point.
+# Input format of files (0: only 1 input file, no initial condition)
 0
-# If above is 1, list name of data file next.  If 0, no entry needed.
-# State Variables:
-# These are in the formats: lower bound, upper bound, Rf0
-# y1
+# Measured data file paths (one for each measurement)
+./observations/data0.dat
+./observations/data1.dat
+./observations/data2.dat
+./observations/data3.dat
+# Stimuli data file paths (none)
+# State variable bounds and Rf0 values
 -15, 15, 0.01
-# y2
 -15, 15, 0.01
-# y3
 -15, 15, 0.01
-# y4
 -15, 15, 0.01
-# y5
 -15, 15, 0.01
-# Parameters:
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+# Control variable bounds (none)
+# Parameter bounds (last line is correct value; not read)
 0, 20, 8.17
-#annealing setting: R_f = R_f0*alpha^beta
-#There are in the formats: alpha, incresement of beta, maximum beta
-# here we have alpha=2, beta = 0, 1, 2, 3, ..., 29
+# Alpha, min beta, max beta
 2,1,30
 \end{verbatim}
-%\paragraph{Lorenz96 D=5 Action Level Plot}
+
+\paragraph{\underline{sub.sh}}
+
+\begin{verbatim}
+#!/bin/bash
+#$ -t 1-100
+#$ -N lorenz96_cpp
+#$ -cwd
+#$ -j y
+#$ -S /bin/bash
+#$ -m beas
+#$ -o ./output
+#$ -e ./error
+#$ -q batch.q
+./lorenz96_cpp $SGE_TASK_ID
+\end{verbatim}
+
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{figure/lorenz96.png}
-\caption{Lorenz 96 D=5 L=1 Action Level}
+\includegraphics[width=1.0\textwidth]{figure/Lorenz96_single/action.png}
+\caption{Lorenz 96 D=10 L=4 action plot for all 100 initial guesses.}
 \label{fig:lorenz96}
 \end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1.0\textwidth]{figure/Lorenz96_single/estimation.png}
+\caption{Lorenz 96 D=10 L=4 estimate for lowest action level.}
+\end{figure}
+
+
+\clearpage
+
+%%         L96 multiple data
+
+\subsection{Lorenz96 D=10 (mutiple data sets)}
+
+equations.txt is the same as in the previous section.
+
+\paragraph{\underline{specs.txt}}
+\begin{verbatim}
+# N/2 (total data is 161 steps, at dt = 0.01)
+80
+# Skipped data 
+100
+# Twice the timestep of the data file
+0.02
+# Input format of files (2: several datasets, no initial condition)
+2
+# 100 initial conditions for each data set
+100
+# data files have extension .txt
+txt
+./observations/observations_
+# Stimuli data file paths (none)
+# State variable bounds and Rf0 values
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+# Control variable bounds (none)
+# Parameter bounds (last line is correct value; not read)
+0, 20, 8.17
+# Alpha, min beta, max beta
+2,1,30
+\end{verbatim}
+
+\paragraph{\underline{sub.sh}}
+
+\begin{verbatim}
+#!/bin/bash
+#$ -t 100-599
+#$ -N lorenz96_cpp
+#$ -cwd
+#$ -j y
+#$ -S /bin/bash
+#$ -m beas
+#$ -o ./output
+#$ -e ./error
+#$ -q batch.q
+./lorenz96_cpp $SGE_TASK_ID
+\end{verbatim}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.47\textwidth]{figure/Lorenz96_multiple/action_path_1.png}
+\includegraphics[width=0.47\textwidth]{figure/Lorenz96_multiple/action_path_2.png} \\
+\includegraphics[width=0.47\textwidth]{figure/Lorenz96_multiple/action_path_3.png}
+\includegraphics[width=0.47\textwidth]{figure/Lorenz96_multiple/action_path_4.png} \\
+\includegraphics[width=0.47\textwidth]{figure/Lorenz96_multiple/action_path_5.png}
+\caption{Lorenz 96 D=10 L=4 action plots for the 5 data sets.}
+\label{fig:lorenz96_multiple}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{figure/Lorenz96_multiple/estimation_1.png} \\
+\caption{Lorenz 96 D=10 L=4 estimate for lowest action levels for data set 1. Data set 1 is the same used in the previous example, and one sees that both the action plot and best estimate are identical.}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{figure/Lorenz96_multiple/estimation_5.png} \\
+\caption{Lorenz 96 D=10 L=4 estimate for lowest action levels for data set 5. Here the lowest action level gives a poorer estimate. This is consistent with the action plots (Figure \ref{fig:lorenz96_multiple}, where it is seen that the lowest action level for the 5th data set is not quite near the expected value of about 4.}
+\end{figure}
+
+
+\clearpage
+
+
+%%         L96 synchronizing
+
+\subsection{Lorenz96 D=10 (synchronizing control terms)}
+
+\paragraph{\underline{Vector field}}
+\begin{align*}
+\frac{dx_1}{dt}&= x_{10}(x_2-x_9)-x_1+f + u_1(y_1 - x_1)\qquad &&\frac{dx_2}{dt}= x_1(x_3-x_{10})-x_2+f + u_2(y_2 - x_2)\\
+\frac{dx_3}{dt}&= x_2(x_4-x_1)-x_3+ f + u_3(y_3- x_3) \qquad &&\frac{dx_4}{dt}= x_3(x_5-x_2)-x_4+f+ u_4(y_4 - x_4)\\
+\frac{dx_5}{dt}&= x_4(x_6-x_3)-x_5+f \qquad & &\frac{dx_6}{dt}= x_5(x_7-x_4)-x_6+f\\
+\frac{dx_7}{dt}&= x_6(x_8-x_5)-x_7+f  \qquad &&\frac{dx_8}{dt}= x_7(x_9-x_6)-x_8+f\\
+\frac{dx_9}{dt}&= x_8(x_{10}-x_7)-x_9+f  \qquad  &&\frac{dx_{10}}{dt} = x_9(x_1-x_8)-x_{10}+f
+\end{align*}
+\paragraph{\underline{equations.txt}}
+\begin{verbatim}
+# Problem Name
+lorenz96
+# nY,nP,nU,nI,nF,nM
+10,1,3,0,0,3
+# Dynamical equations (including synchronization terms)
+yy9*(yy1-yy8)-yy0+FF1 + u1*(data0-yy0)
+yy0*(yy2-yy9)-yy1+FF1 + u2*(data1-yy1)
+yy1*(yy3-yy0)-yy2+FF1 + u3*(data2-yy2)
+yy2*(yy4-yy1)-yy3+FF1 
+yy3*(yy5-yy2)-yy4+FF1
+yy4*(yy6-yy3)-yy5+FF1
+yy5*(yy7-yy4)-yy6+FF1
+yy6*(yy8-yy5)-yy7+FF1
+yy7*(yy9-yy6)-yy8+FF1
+yy8*(yy0-yy7)-yy9+FF1
+# Measurement terms of cost function 
+(data0-yy0)*(data0-yy0) + (data1-yy1)*(data1-yy1) + (data2-yy2)*(data2-yy2) 
++ u1*u1 +u2*u2 + u3*u3
+# Variable names
+yy0
+yy1
+yy2
+yy3
+yy4
+yy5
+yy6
+yy7
+yy8
+yy9
+# Control names
+u1
+u2
+u3
+# Parameter names
+FF1
+# Data names
+data0
+data1
+data2
+# Stimuli names (none)
+# External functions (none)
+\end{verbatim}
+
+\paragraph{\underline{specs.txt}}
+\begin{verbatim}
+# N/2 (Using 401 data points from data files)
+200
+# Skipped data 
+100
+# Twice the timestep of the data file
+0.02
+# Input format of files (2: data in single file)
+2
+# (0: there is only 1 dataset, but all measurements in 1 file)
+0
+txt
+observations/observations_1
+# Stimuli data file paths (none)
+# State variable bounds and Rf0 values (Rf0 high to enforce constraints strictly)
+-15, 15, 10^8
+-15, 15, 10^8
+-15, 15, 10^8
+-15, 15, 10^8
+-15, 15, 10^8
+-15, 15, 10^8
+-15, 15, 10^8
+-15, 15, 10^8
+-15, 15, 10^8
+-15, 15, 10^8
+# Control variable bounds and initial values
+-1,1,1
+-1,1,1
+-1,1,1
+# Parameter bounds (last line is correct value; not read)
+0, 20, 8.17
+# Alpha, min beta, max beta (only 1 step optimization)
+2,1,1
+# Output format (2: save control variables to file)
+-2
+\end{verbatim}
+
+\paragraph{\underline{sub.sh}}
+\begin{verbatim}
+#!/bin/bash
+#$ -t 1-100
+#$ -N lorenz96_cpp
+#$ -cwd
+#$ -j y
+#$ -S /bin/bash
+#$ -m beas
+#$ -o ./output
+#$ -e ./error
+#$ -q batch.q
+./lorenz96_cpp $SGE_TASK_ID
+\end{verbatim}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{figure/Lorenz96_syn/estimation.png} \\
+\caption{Lorenz 96 D=10 L=3 estimate for lowest action level. The last three variables are the control terms. The forcing parameter FF1 was estimated to be about 8.149 (true value 8.17).}
+\end{figure}
+
+\clearpage
+
+% NAKL
+
 \subsection{NaKL}
-\paragraph{NaKL Vector Field}
+\paragraph{Vector field}
 \begin{align*}
 \frac{dV}{dt}&=CI_{inj}(t) + g_{Na}m^3h(E_{Na}-V) + g_{K}n^4(E_K-V) + g_L(E_L-V)\\
 \frac{da}{dt}&=\frac{a_\infty-a}{\tau_a}, ~~~~a=\{m, h, n\}\\
 a_\infty&=\frac12+\frac12\tanh\left(\frac{V-V_a}{\Delta V_a}\right)\\
 \tau_a&=\tau_{a0}+\tau_{a0}\left(1-\tanh^2\left(\frac{V-V_a}{\Delta V_a}\right)\right)
 \end{align*}
-\paragraph{NaKL equations.txt}
+
+
+\paragraph{\underline{equations.txt}}
 \begin{verbatim}
 simple_nakl
-# nY,nP,nU,nI,nF,nM
 4,19,0,1,0,1
-#vector field
+# Dynamical equations (dV/dt, dn/dt, dh/dt, dm/dt)
 gNa*(m0*m0*m0*h0)*(ENa-V0)+gK*n0*n0*n0*n0*(EK-V0)+gL*(EL-V0)+Area*Iinj
-(0.5*(1+tanh((V0-Vmo)*dVm)) - m0)/(Cm1+Cm2*(1.0-tanh((V0-Vmo)*dVm)*tanh((V0-Vmo)*dVm)))
-(0.5*(1+tanh((V0-Vho)*dVh)) - h0)/(Ch1+Ch2*(1.0-tanh((V0-Vho)*dVh)*tanh((V0-Vho)*dVh)))
-(0.5*(1+tanh((V0-Vno)*dVn)) - n0)/(Cn1+Cn2*(1.0-tanh((V0-Vno)*dVn)*tanh((V0-Vno)*dVn)))
-#obj function
+(0.5*(1+tanh((V0-Vmo)*dVm)) - m0)/(Cm1+Cm2*(1.0-tanh((V0-Vmo)*dVm)
+*tanh((V0-Vmo)*dVm)))
+(0.5*(1+tanh((V0-Vho)*dVh)) - h0)/(Ch1+Ch2*(1.0-tanh((V0-Vho)*dVh)
+*tanh((V0-Vho)*dVh)))
+(0.5*(1+tanh((V0-Vno)*dVn)) - n0)/(Cn1+Cn2*(1.0-tanh((V0-Vno)*dVn)
+*tanh((V0-Vno)*dVn)))
+# Measurement term of objective function
 (VDATA0 - V0)*(VDATA0 - V0)
-#states
+# State variable names
 V0
 m0
 h0
 n0
-#parameters
+# Control variable names (none)
+# Parameter names
 gNa
 ENa
 gK
@@ -340,75 +684,96 @@ Vno
 dVn
 Cn1
 Cn2
-#data names
+# Data names
 VDATA0
-#stimuli
+# External stimuli names
 Iinj
+# Externally defined functions (none)
 \end{verbatim}
-\paragraph{NaKL specs.txt}
+
+\paragraph{\underline{specs.txt}}
+
 \begin{verbatim}
+# N/2 (total data is 6001 steps, at dt = 0.01)
 3000
+# Skipped data (none)
 0
+# Twice the timestep of the data file (data taken at 50 kHz)
 0.04
-#data
-./noise_measured.dat
-#stimuli
-./current.dat
-0
-#./allstates.dat
-# state bounds and Rf0
+# Input format of files (1: single data set, initial condition file)
+1
+# Initial data file
+./input_data/initial_guess.dat
+# Measured data file paths (one for each measurement)
+./input_data/noise_measured.dat
+./input_data/current.dat
+# State variable bounds and Rf0 values
 -150,70,1e-3
 0, 1,1e1
 0, 1,1e1
 0, 1,1e1
-# parameter bounds
-#gna
-50,200,100,120
-#Ena
-0,100,50,50
-#gki
-5,40,30,20
-#Ek
--100,-50,-70,-77
-#gl
-0.1,1,.2,.3
-#El
--60,-50,-52,-54
-#Area
-0.5,1.5,1,0.8
-#mv1
--60,-30,-45,-40
-#mv2
-.01,0.1,.075,0.06667
-#cm1
-0.05,.25,.15,.1
-#cm2
-.1,1,.4,.4
-#hv1
--70,-40,-50,-60
-#hv2
--0.1,-.01,-.05,-.06667
-#ch1
-.1,5,1.2,1
-#ch2
-1,15,6,7
-#nv1
--70,-40,-52,-55
-#nv2
-.01,0.1,.03,.03333
-#cn1
-.1,5,.8,1
-#cn2
-2,12,5,5
-#anneal settings
+# Control variable bounds (none)
+# Parameter bounds (plus true values and names, which aren't read)
+50,200,120, gNa
+0,100,50, ENa
+5,40,20, gK
+-100,-50,-77, EK
+0.1,1,.3, gL
+-60,-50,-54, EL
+0.5,1.5,0.8, Area
+-60,-30,-40, Vmo
+.01,0.1,0.06667, dVm
+0.05,.25,.1, Cm1
+.1,1,.4, Cm2
+-70,-40,-60, Vho
+-0.1,-.01,-.06667, dVh
+.1,5,1, Ch1
+1,15,7, Ch2
+-70,-40,-55, Vno
+.01,0.1,.03333, dVn
+.1,5,1, Cn1
+2,12,5, Cn2
+# Anneal settings
 2,1,30
 \end{verbatim}
+
+\paragraph{\underline{sub.sh}}
+
+\begin{verbatim}
+#!/bin/bash
+#$ -t 1-100
+#$ -N simple_nakl_cpp
+#$ -cwd
+#$ -j y
+#$ -S /bin/bash
+#$ -m beas
+#$ -o ./output
+#$ -e ./error
+#$ -q batch.q
+./simple_nakl_cpp $SGE_TASK_ID
+\end{verbatim}
+
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{figure/NaKL.png}
-\caption{NaKL Action Level}
+\includegraphics[width=1\textwidth]{figure/NaKL/action.png}
+\caption{NaKL model action plot.}
 \label{fig:NaKL}
 \end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{figure/NaKL/estimation.png}
+\caption{NaKL model best estimate, compared against the true trajectories.}
+\label{fig:NaKL}
+\end{figure}
+
+
+
+\clearpage
+
+
+%% this section deleted
+\iffalse
 \newpage
 \section{New Features}
 \subsection{ Resubmission Feature (added 2015/4/9)}
@@ -435,9 +800,13 @@ In summary, the following is the list of the steps
 \item run the executive file
 \end{enumerate}
 \paragraph{Warning:} The resubmission feature would introduce round-off errors. Double precision data are outputted into the file in the format of \texttt{\%e}, when those data are read back into the code, it may introduce round-off errors. In the example of Lorenz96, the round-off error caused the final optimal values of the cost function differed from regular calculation values by $0\sim25$.
+\fi
+
+%%% End of deleted section
+
 \section{Troubleshooting}
 I have tested these scripts over a wide range of problems, so I believe that the algorithms are correct. However, there are a few common errors that may crop up.
 \begin{itemize}
-\item Variable and parameter naming is very important. At few common problems can crop up. Never use a variable name that includes the name of another variable. For instance p1 and p11 would be bad, since p11 includes p1. In this case, p01 and p11 would be adequate. Along this vein, all variable names should be at least 2 characters long, just in case.
+\item Variable and parameter naming is very important. Never use a variable name that includes the name of another variable. For instance p1 and p11 would be bad, since p11 includes p1. In this case, p01 and p11 would be adequate. Along this vein, all variable names should be at least 2 characters long, just in case.
 \end{itemize}
 \end{document}

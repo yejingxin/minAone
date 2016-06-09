@@ -8,11 +8,8 @@
 \BOOKMARK [1][-]{section.6}{Running the Code}{}% 8
 \BOOKMARK [1][-]{section.7}{Run in Parallel}{}% 9
 \BOOKMARK [1][-]{section.8}{Examples}{}% 10
-\BOOKMARK [2][-]{subsection.8.1}{Lorenz96 D=5}{section.8}% 11
-\BOOKMARK [2][-]{subsection.8.2}{NaKL}{section.8}% 12
-\BOOKMARK [1][-]{section.9}{New Features}{}% 13
-\BOOKMARK [2][-]{subsection.9.1}{ Resubmission Feature \(added 2015/4/9\)}{section.9}% 14
-\BOOKMARK [3][-]{subsubsection.9.1.1}{Description}{subsection.9.1}% 15
-\BOOKMARK [3][-]{subsubsection.9.1.2}{Installation}{subsection.9.1}% 16
-\BOOKMARK [3][-]{subsubsection.9.1.3}{Data File Configuration}{subsection.9.1}% 17
-\BOOKMARK [1][-]{section.10}{Troubleshooting}{}% 18
+\BOOKMARK [2][-]{subsection.8.1}{Lorenz96 D=10 \(single data set\)}{section.8}% 11
+\BOOKMARK [2][-]{subsection.8.2}{Lorenz96 D=10 \(mutiple data sets\)}{section.8}% 12
+\BOOKMARK [2][-]{subsection.8.3}{Lorenz96 D=10 \(synchronizing control terms\)}{section.8}% 13
+\BOOKMARK [2][-]{subsection.8.4}{NaKL}{section.8}% 14
+\BOOKMARK [1][-]{section.9}{Troubleshooting}{}% 15

@@ -1,53 +1,41 @@
+# N/2 (total data is 6001 steps, at dt = 0.01)
 3000
+# Skipped data (none)
 0
+# Twice the timestep of the data file (data taken at 50 kHz)
 0.04
-./noise_measured.dat
-./current.dat
-0
-#./allstates.dat
-# 5th column are integration initial conditions (not read by minAzero)
--150,70,1e-3,-64
-0, 1,1e1,0.05
-0, 1,1e1,0.6
-0, 1,1e1,0.4
-# actual values are last value (not read by minAzero) - use as reference
-#gna
-50,200,100,120
-#Ena
-0,100,50,50
-#gki
-5,40,30,20
-#Ek
--100,-50,-70,-77
-#gl
-0.1,1,.2,.3
-#El
--60,-50,-52,-54
-#Area
-0.5,1.5,1,0.8
-#mv1
--60,-30,-45,-40
-#mv2
-.01,0.1,.075,0.06667
-#cm1
-0.05,.25,.15,.1
-#cm2
-.1,1,.4,.4
-#hv1
--70,-40,-50,-60
-#hv2
--0.1,-.01,-.05,-.06667
-#ch1
-.1,5,1.2,1
-#ch2
-1,15,6,7
-#nv1
--70,-40,-52,-55
-#nv2
-.01,0.1,.03,.03333
-#cn1
-.1,5,.8,1
-#cn2
-2,12,5,5
-#
+# Input format of files (1: single data set, initial condition file)
+1
+# Initial data file
+./input_data/initial_guess.dat
+# Measured data file paths (one for each measurement)
+./input_data/noise_measured.dat
+./input_data/current.dat
+# State variable bounds and Rf0 values
+-150,70,1e-3
+0, 1,1e1
+0, 1,1e1
+0, 1,1e1
+# Control variable bounds (none)
+# Parameter bounds (plus true values and names, which aren't read)
+50,200,120, gNa
+0,100,50, ENa
+5,40,20, gK
+-100,-50,-77, EK
+0.1,1,.3, gL
+-60,-50,-54, EL
+0.5,1.5,0.8, Area
+-60,-30,-40, Vmo
+.01,0.1,0.06667, dVm
+0.05,.25,.1, Cm1
+.1,1,.4, Cm2
+-70,-40,-60, Vho
+-0.1,-.01,-.06667, dVh
+.1,5,1, Ch1
+1,15,7, Ch2
+-70,-40,-55, Vno
+.01,0.1,.03333, dVn
+.1,5,1, Cn1
+2,12,5, Cn2
+# Anneal settings
 2,1,30

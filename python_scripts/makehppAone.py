@@ -141,6 +141,9 @@ for i in range(discAone.nI):
   double* %s;\n\
   double* %s;\n' % (discAone.Lstimuli[i], discAone.Lstimuli[i]+'dummy'))
 
+f.write('\
+  double tmpdata;')
+
 #  int %s;\n' % (discAzero.Ldata[i], discAzero.Ldata[i]+'dummy',discAzero.Ldata[i]+'skip'))
   
 f.write('\
@@ -179,6 +182,10 @@ f.write('\
   double alpha;\n\
   int beta, delta_beta, max_beta;\n\
   int taskid;\n\
+  int pathid;\n\
+  int modid;\n\
+  int file_fmt;\n\
+  int output_fmt;\n\
   %s_NLP(const %s_NLP&);\n\
   %s_NLP& operator=(const %s_NLP&);\n\
   //@}\n\

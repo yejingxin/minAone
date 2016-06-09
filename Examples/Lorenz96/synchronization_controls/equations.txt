@@ -1,0 +1,40 @@
+# Problem Name
+lorenz96
+# nY,nP,nU,nI,nF,nM
+10,1,3,0,0,3
+# Dynamical equations (including synchronization terms)
+yy9*(yy1-yy8)-yy0+FF1 + u1*(data0-yy0)
+yy0*(yy2-yy9)-yy1+FF1 + u2*(data1-yy1)
+yy1*(yy3-yy0)-yy2+FF1 + u3*(data2-yy2)
+yy2*(yy4-yy1)-yy3+FF1 
+yy3*(yy5-yy2)-yy4+FF1
+yy4*(yy6-yy3)-yy5+FF1
+yy5*(yy7-yy4)-yy6+FF1
+yy6*(yy8-yy5)-yy7+FF1
+yy7*(yy9-yy6)-yy8+FF1
+yy8*(yy0-yy7)-yy9+FF1
+# Measurement terms of cost function 
+(data0-yy0)*(data0-yy0) + (data1-yy1)*(data1-yy1) + (data2-yy2)*(data2-yy2) + u1*u1 +u2*u2 + u3*u3
+# Variable names
+yy0
+yy1
+yy2
+yy3
+yy4
+yy5
+yy6
+yy7
+yy8
+yy9
+# Control names
+u1
+u2
+u3
+# Parameter names
+FF1
+# Data names
+data0
+data1
+data2
+# Stimuli names (none)
+# External functions (none)

@@ -1,22 +1,19 @@
 simple_nakl
 4,19,0,1,0,1
-#
+# Dynamical equations (dV/dt, dn/dt, dh/dt, dm/dt)
 gNa*(m0*m0*m0*h0)*(ENa-V0)+gK*n0*n0*n0*n0*(EK-V0)+gL*(EL-V0)+Area*Iinj
-#
 (0.5*(1+tanh((V0-Vmo)*dVm)) - m0)/(Cm1+Cm2*(1.0-tanh((V0-Vmo)*dVm)*tanh((V0-Vmo)*dVm)))
-#
 (0.5*(1+tanh((V0-Vho)*dVh)) - h0)/(Ch1+Ch2*(1.0-tanh((V0-Vho)*dVh)*tanh((V0-Vho)*dVh)))
-#
 (0.5*(1+tanh((V0-Vno)*dVn)) - n0)/(Cn1+Cn2*(1.0-tanh((V0-Vno)*dVn)*tanh((V0-Vno)*dVn)))
-#
-#obj function
+# Measurement term of objective function
 (VDATA0 - V0)*(VDATA0 - V0)
-#states
+# State variable names
 V0
 m0
 h0
 n0
-#parameters
+# Control variable names (none)
+# Parameter names
 gNa
 ENa
 gK
@@ -36,9 +33,8 @@ Vno
 dVn
 Cn1
 Cn2
-#control names
-#data names
+# Data names
 VDATA0
-#stimuli
+# External stimuli names
 Iinj
-#noise
+# Externally defined functions (none)

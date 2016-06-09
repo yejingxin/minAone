@@ -6,20 +6,24 @@
 \contentsline {subsection}{\numberline {4.2}IPOPT}{4}{subsection.4.2}
 \contentsline {section}{\numberline {5}minAone.py Description}{5}{section.5}
 \contentsline {section}{\numberline {6}Running the Code}{7}{section.6}
-\contentsline {section}{\numberline {7}Run in Parallel}{9}{section.7}
-\contentsline {section}{\numberline {8}Examples}{9}{section.8}
-\contentsline {subsection}{\numberline {8.1}Lorenz96 D=5}{10}{subsection.8.1}
-\contentsline {paragraph}{Lorenz96 D=5 Vector Field}{10}{section*.6}
-\contentsline {paragraph}{Lorenz96 D=5 equations.txt}{10}{section*.7}
-\contentsline {paragraph}{Lorenz96 D=5 specs.txt}{10}{section*.8}
-\contentsline {subsection}{\numberline {8.2}NaKL}{12}{subsection.8.2}
-\contentsline {paragraph}{NaKL Vector Field}{12}{section*.9}
-\contentsline {paragraph}{NaKL equations.txt}{12}{section*.10}
-\contentsline {paragraph}{NaKL specs.txt}{13}{section*.11}
-\contentsline {section}{\numberline {9}New Features}{16}{section.9}
-\contentsline {subsection}{\numberline {9.1} Resubmission Feature (added 2015/4/9)}{16}{subsection.9.1}
-\contentsline {subsubsection}{\numberline {9.1.1}Description}{16}{subsubsection.9.1.1}
-\contentsline {subsubsection}{\numberline {9.1.2}Installation}{16}{subsubsection.9.1.2}
-\contentsline {subsubsection}{\numberline {9.1.3}Data File Configuration}{16}{subsubsection.9.1.3}
-\contentsline {paragraph}{Warning:}{17}{section*.12}
-\contentsline {section}{\numberline {10}Troubleshooting}{17}{section.10}
+\contentsline {section}{\numberline {7}Run in Parallel}{12}{section.7}
+\contentsline {section}{\numberline {8}Examples}{13}{section.8}
+\contentsline {subsection}{\numberline {8.1}Lorenz96 D=10 (single data set)}{13}{subsection.8.1}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {Vector field}}\mathsurround \z@ $\relax }{13}{section*.6}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{14}{section*.7}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{15}{section*.8}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{15}{section*.9}
+\contentsline {subsection}{\numberline {8.2}Lorenz96 D=10 (mutiple data sets)}{18}{subsection.8.2}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{18}{section*.10}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{18}{section*.11}
+\contentsline {subsection}{\numberline {8.3}Lorenz96 D=10 (synchronizing control terms)}{23}{subsection.8.3}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {Vector field}}\mathsurround \z@ $\relax }{23}{section*.12}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{23}{section*.13}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{24}{section*.14}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{25}{section*.15}
+\contentsline {subsection}{\numberline {8.4}NaKL}{27}{subsection.8.4}
+\contentsline {paragraph}{Vector field}{27}{section*.16}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{27}{section*.17}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{28}{section*.18}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{29}{section*.19}
+\contentsline {section}{\numberline {9}Troubleshooting}{32}{section.9}

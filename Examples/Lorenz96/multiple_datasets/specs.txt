@@ -1,0 +1,28 @@
+# N/2 (total data is 161 steps, at dt = 0.01)
+80
+# Skipped data 
+100
+# Twice the timestep of the data file
+0.02
+# Input format of files (2: several datasets, no initial condition)
+2
+100
+txt
+./observations/observations_
+# Stimuli data file paths (none)
+# State variable bounds and Rf0 values
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+-15, 15, 0.01
+# Control variable bounds (none)
+# Parameter bounds (last line is correct value; not read)
+0, 20, 8.17
+# Alpha, min beta, max beta
+2,1,30
