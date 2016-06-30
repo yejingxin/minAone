@@ -25,15 +25,18 @@
 \newpage
 \section{About \texttt{minAone}}
 The annealing code \texttt{minAone} described in this document is used for calculating action levels of the Gaussian error action for the estimation of dynamical systems. The code is developed as an extention of \texttt{minAzero} written by Bryan Toth and Chris Knowlton (hence the the uninspired name \texttt{minAone}). In another aspect, following the lowest action level $A_0$, $A_1$ represents the second lowest one, which is an interesting quantity we care about and has significant application in statistical data assimilation.
+
 \section{Problem Statement}
 Given a dynamical system modeled by $D$-dimensional discrete map
 \[{x_a}(n+1)=f_a(\mathbf{x}(n)),~~a=1,\dots,D\]
-the probability distribution of its states can be expressed as $P(X|Y)=\int \mathcal {D}X \exp(-A_0[X])$, when $L$-dimensional obersations $Y$ are present.  If one assumes both measurement noises and model error are independent and gaussian, the action $A_0$ in discrete time has the format of
+the probability distribution of its final state can be expressed as $P(x(N)|Y)=\int \mathcal {D}X \exp(-A_0[X])$, when $L$-dimensional observations $Y$ are present.  If one assumes both measurement noises and model error are independent and gaussian, the action $A_0$ in discrete time has the format of
 \begin{align}
 A_0(X) = &\sum_{n=0}^m\, \frac{R_m(n)}{2} \sum_{l=1}^L [x_l(n) - y_l(n)]^2 +  \frac{R_f}{2} \sum_{n=0}^{m-1} \sum_{a=1}^D[x_a(n+1) - f_a(\mathbf{x}(n))]^2 .
 \label{eq:actionform}
 \end{align}
 where $R_m$ and $R_f$ are the inverse of variances.
+
+This high-dimensional integral can often be well approximated by a sum of stationary points of the argument $A$. Therefore, one may use a nonlinear optimization routine to find the minima of $A$, hoping that the lowest one gives a good estimate of the desired trajectory. Unfortunately, the action is quite nonconvex, and this search can scale quite badly in higher dimensions. 
 
 The annealing method is based on the observation that the minima solution $X^q$ of $A_0$ at $R_f=0$ is $x_l(n)=y_l(n)$, the other $D-L$ components of the model state vector are undetermined, and the solution is degenerate. As we increase $R_f$, the action levels split, and depending on $R_m$, $R_f$, $L$ and the precise form of the dynamical vector field $\mathbf{f}(\mathbf{x})$, there will be 1,2,\dots minima of $A_0$.
 
@@ -59,8 +62,8 @@ Get it here: \url{https://projects.coin-or.org/Ipopt}
 \begin{itemize}
 \item Download and unzip latest version of IPOPT 
 \item As of right now this is 3.11.7 - Efficacy of installation instructions may degrade over time as packages are updated.
-\item Go into ThirdParty folder in the IPOPT directory then do the following commands.
-\end{itemize}
+\item Go into ThirdParty folder in the IPOPT directory then execute the following commands.
+%\end{itemize}
 \begin{verbatim}
 $ cd Blas
 $ ./get.Blas
@@ -71,7 +74,7 @@ $ ./get.ASL
 $ cd ../Metis
 $ ./get.Metis
 \end{verbatim}
-\begin{itemize}
+%\begin{itemize}
 \item Get the HSL subroutines from \url{http://hsl.rl.ac.uk/ipopt}
 \item Note that there are two releases for HSL - you will want the more complete one that contains ma57, ma77, and ma97. 
 \item While the freely available ma27 will work for many problems, the newer packages are faster, work on larger problems, and can use multi-core architecture.
@@ -82,22 +85,24 @@ $ ./get.Metis
 \subsubsection*{Install}
 \begin{itemize}
 \item Go to the IPOPT directory
-\end{itemize}
+%\end{itemize}
 \begin{verbatim}
 $ mkdir build
 $ cd build
 $ ../configure
 \end{verbatim}
-\begin{itemize}
+%\begin{itemize}
 \item Note that if you have lapack or blas installed previously you can use --with-lapack and --with-blas to link to those packages
 \item If something goes wrong refer here \url{http://www.coin-or.org/Ipopt/documentation/node19.html#ExpertInstall}
 \item Assuming everything worked:
-\end{itemize}
+%\end{itemize}
 \begin{verbatim}
 $ make
 $ make test
 $ make install
 \end{verbatim}
+\end{itemize}
+
 
 \section{minAone.py Description}
 minAone is a python script used to write C++ code and compiler instructions using the IPOPT (Interior Point OPTimization) libraries to estimate unmeasured states and parameters in dynamical systems with limited measurements.  The scripts take a set of differential equations and state and parameter names provided by a text file "equations.txt" and returns a set of C++ files consisting of a set of constraints based on a discretized version of those differential equations.  A second text file 'specs.txt' allows for changes in run specific quantities state and parameter bounds, as well as input files without the need to recompile.
@@ -169,13 +174,13 @@ minAone uses as input a) any needed data files containing measurement or stimulu
 
 \begin{itemize}
 
-\item {\bf Line 1} number of discrete timesteps isteps the code will use.  {\it Importantly}, because the code is compiled using a midpoint method, the actual problem length will double this plus one. If your data file is $N$ time points in length, this value should be $N/2$.
-\item {\bf Line 2} number of lines in each input file to skip.  This allows for the code to start at any point in a long data set. Note that this same amount of data will be skipped in initial condition and stimulus files as well.
-\item {\bf Line 3} double the time step of the data. Again, since a midpoint method is used, this time step is for a whole step - which includes two points. If your data is sampled at $dt = 0.05$, this value should be $0.1$.
-\item {\bf Line 4 and following several lines} Line 4 is extremely important; it indicates the format of the input files. The only accepted values are  either 0, 1, 2, or 3. 
+\item {\bf Line 1} number of discrete timesteps isteps the code will use.  Importantly, because the code is compiled using a midpoint method, the actual problem length will double this plus one. If your data file consists of $N$+1 points, this value should be $N/2$.
+\item {\bf Line 2} number of lines in each input file to skip.  This allows for only certain parts of a long data set to be used. Note that this same amount of data will be skipped in initial condition and stimulus files as well.
+\item {\bf Line 3} double the time step of the data. Again, since a midpoint method is used, this time step is for a whole step, which includes two points. If your data is sampled at $dt = 0.05$, this value should be $0.1$.
+\item {\bf Line 4 and following several lines} Line 4 is extremely important; it indicates the format of the input files. The only accepted values are  either 0, 1, 2, or 3. These are described in detail below.
 
 
-\item[$\rightarrow$] {\bf 0}: You do not have an initial guess for estimated trajectory; it will be chosen uniformly at random from the dynamical range of the state variables and is seeded by the task ID for repeatability. Your observation data is saved in individual files, each of a single column indicating the value of the observation at successive times spaced by $dt$. Stimulus files are also saved invidually in this same format. After line 4, you will have nM lines for the file path of each observation, and nI lines for that of each stimulus. For example, you have 10 state variables, of which 2 are measured, and 1 stimulus file. Lines 4-7 may read:
+\item[$\rightarrow$] {\bf 0}: You {\bf do not} have an initial guess for estimated trajectory; it will be chosen uniformly at random from the dynamical range of the state variables and is seeded by the task ID for repeatability. Further, your observation data is saved in individual files, each of a single column indicating the value of the observation at successive times spaced by $dt$. Stimulus files are also saved invidually in this same format. After line 4, you will have nM lines for the file path of each observation, and nI lines for that of each stimulus. For example, you have 10 state variables, of which 2 are measured, and 1 stimulus file. Lines 4-7 may read:
 
 \begin{verbatim}
 0
@@ -184,7 +189,7 @@ minAone uses as input a) any needed data files containing measurement or stimulu
 ./injectedCurrent.dat
 \end{verbatim}
 
-\item[$\rightarrow$] {\bf 1}: Same as {\bf 0}`, except you {\bf do} have an initial guess for the estimated trajectory. This guess is saved in a file of nY columns and $N$ rows, plus nP values at the end of the file for the parameters. Equivalently, the data can be saved as a single column, keeping in mind that the inner loop is over nY while the outer loop is time, with the parameter guesses added as the last nP rows. Also, keep in mind that if data is being skipped (second line in specs is not zero), then the same number of rows will be skipped from this file. 
+\item[$\rightarrow$] {\bf 1}: Same as {\bf 0}, except you {\bf do} have an initial guess for the estimated trajectory. This guess is saved in a file of nY columns and $N$ rows, plus nP values at the end of the file for the parameters. Equivalently, the data can be saved as a single column, keeping in mind that the inner loop is over nY while the outer loop is time, with the parameter guesses added as the last nP rows. Also, keep in mind that if data is being skipped (second line in specs is not zero), then the same number of rows will be skipped from this file. 
 
 The initial guess file is written in Line 5 of \texttt{specs.txt}. The following nM + nI lines are for the observation and stimulus data file paths, as in the previous case. For example:
 
@@ -197,11 +202,11 @@ The initial guess file is written in Line 5 of \texttt{specs.txt}. The following
 \end{verbatim}
 
 
-\item[$\rightarrow$] {\bf 2} You do not have an initial guess for estimated trajectory. Further, you have {\bf many} datasets in appropriately indexed files. For example, you have 25 different sets of observed data, labeled \texttt{observations0.txt}, \texttt{observations1.txt}, ..., \texttt{observations24.txt}; each of these files has the data of {\it all} measured variables (in the previous cases, each column was a separate file). In addition, each data set was generated using a distinct stimulus, \texttt{stimulus0.txt}, ..., \texttt{stimulus24.txt}. Finally, you want to run 1000 estimations for {\it each} data set. This tag allows you to run all of this from a single \texttt{specs.txt} file. 
+\item[$\rightarrow$] {\bf 2} You {\bf do not} have an initial guess for estimated trajectory. Further, you have {\bf many} datasets in appropriately indexed files. For example, you have 25 different sets of observed data, labeled \texttt{observations0.txt}, \texttt{observations1.txt}, ..., \texttt{observations24.txt}; each of these files has the data of {\it all} measured variables (in the previous cases, each column was a separate file). In addition, each data set was generated using a distinct stimulus, \texttt{stimulus0.txt}, ..., \texttt{stimulus24.txt}. Finally, you want to run 1000 estimations for {\it each} data set. This tag allows you to run all of this from a single \texttt{specs.txt} file. 
 
 Note that your observation files must have as many columns as variables, nY, {\it not} measurements, nM. Thus, if only nM = 2 out of nY = 5 variables are measured, the first 2 columns must be these measured data, while the last 3 columns must be composed of dummy data. For the stimulus files, the number of columns is nI, as expected. 
 
-With these datasets, specs is written in the following way. Line 5 is the number of desired runs per dataset. Line 6 is the file extension for your data. Line 7 is the prefix of the data file path, while  Line 8 is the prefix for the stimulus file path. Thus, in the example given above, Lines 4-8 are the following: 
+With these datasets, specs is written in the following way. Line 5 is the number of desired runs per dataset. Line 6 is the file extension for your data. Line 7 is the prefix of the data file path, while  Line 8 is the prefix for the stimulus file path. Thus, in the example given above, Lines 4-8 are the following:
 
 \begin{verbatim}
 2 
@@ -273,11 +278,11 @@ $ minAone.py
 $ make
 $ ./(problem_name)_cpp taskID
 \end{verbatim}
-where taskID is a nonnegative integer specifying the task ID. If data files are missing or too short, or if specs is filled out incorrectly, the code will segfault.
+where taskID is a nonnegative integer specifying the task ID. If data files are missing or too short, or if specs is filled out incorrectly, the code will segfault. Also, note that specs and equations should both be encoded with UNIX-type line endings. If you use gedit in windows for example, change the line ending option when saving, as the default is Windows encoding. 
 
 \section{Run in Parallel}
 One execution of \texttt{(problem\_name)\_cpp} can obtain the result for only one random initial path.
-To explore the landscape of action $A_0$, we need to start from different random paths and each of them will converge to different local minima. Since all those paths are indenpendent from each other, it is easy to implement the calculation in parallel using array job.
+To explore the landscape of action $A_0$, we need to start from different random paths and each of them will converge to different local minima. Since all those paths are independent of one other, it is easy to implement the calculation in parallel using array job.
 
 Here we give a example submission scripts on ccom-boom cluster
 \begin{verbatim}
@@ -507,7 +512,7 @@ txt
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\textwidth]{figure/Lorenz96_multiple/estimation_5.png} \\
-\caption{Lorenz 96 D=10 L=4 estimate for lowest action levels for data set 5. Here the lowest action level gives a poorer estimate. This is consistent with the action plots (Figure \ref{fig:lorenz96_multiple}, where it is seen that the lowest action level for the 5th data set is not quite near the expected value of about 4.}
+\caption{Lorenz 96 D=10 L=4 estimate for lowest action levels for data set 5. Here the lowest action level gives a poorer estimate. This is consistent with the action plots (Figure \ref{fig:lorenz96_multiple}), where it is seen that the lowest action level for the 5th data set is not quite near the expected value of about 4.}
 \end{figure}
 
 
@@ -772,6 +777,226 @@ Iinj
 \clearpage
 
 
+
+% L96 External Functions
+
+\subsection{Lorenz96 D = 10 (externally-defined functions)}
+
+
+\paragraph{\underline{equations.txt}}
+\begin{verbatim}
+lorenz96
+# nY,nP,nU,nI,nF,nM
+10,1,0,0,1,5
+# Dynamical equations (including synchronization terms)
+Lorenzvectorfield(yy0,yy1,yy9,yy8,FF1)
+Lorenzvectorfield(yy1,yy2,yy0,yy9,FF1)
+Lorenzvectorfield(yy2,yy3,yy1,yy0,FF1)
+Lorenzvectorfield(yy3,yy4,yy2,yy1,FF1)
+Lorenzvectorfield(yy4,yy5,yy3,yy2,FF1)
+Lorenzvectorfield(yy5,yy6,yy4,yy3,FF1)
+Lorenzvectorfield(yy6,yy7,yy5,yy4,FF1)
+Lorenzvectorfield(yy7,yy8,yy6,yy5,FF1)
+Lorenzvectorfield(yy8,yy9,yy7,yy6,FF1)
+Lorenzvectorfield(yy9,yy0,yy8,yy7,FF1)
+# Measurement terms of cost function 
+(data0-yy0)*(data0-yy0) + (data1-yy1)*(data1-yy1) + (data2-yy2)*(data2-yy2) 
++ (data3-yy3)*(data3-yy3) + (data4-yy4)*(data4-yy4)
+# Variable names
+yy0
+yy1
+yy2
+yy3
+yy4
+yy5
+yy6
+yy7
+yy8
+yy9
+# Control names (none)
+# Parameter names
+FF1
+# Data names
+data0
+data1
+data2
+data3
+data4
+# Stimuli names (none)
+# External functions (defined in myfunctions.hpp file)
+Lorenzvectorfield, 5
+\end{verbatim}
+
+\paragraph{\underline{specs.txt}}
+
+\begin{verbatim}
+# N/2
+200
+# Skipped data 
+100
+# Twice the timestep of the data file
+0.02
+# Input format of files (2: data in single file)
+2
+# (0: there is only 1 dataset, but all measurements in 1 file)
+0
+txt
+observations/observations_1
+# Stimuli data file paths (none)
+# State variable bounds and Rf0 values
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+# Control variable bounds and initial values (none)
+# Parameter bounds (last line is correct value; not read)
+0, 20, 8.17
+# Alpha, min beta, max beta 
+2,1,30
+\end{verbatim}
+
+\paragraph{\underline{sub.sh}}
+
+\begin{verbatim}
+#!/bin/bash
+#$ -t 1-100
+#$ -N lorenz96_cpp
+#$ -cwd
+#$ -j y
+#$ -S /bin/bash
+#$ -m beas
+#$ -o ./output
+#$ -e ./error
+#$ -q batch.q
+./lorenz96_cpp $SGE_TASK_ID
+\end{verbatim}
+
+\subsubsection{External function definitions in myfunctions.hpp}
+
+The \texttt{myfunctions.hpp} file includes definitions of the user-defined functions that were declared in \texttt{equations.txt}. This header file has 3 functions: the function itself, its gradient function, and its Hessian matrix. The name of the function itself must align with that declared in \texttt{equations.txt}. Likewise, the name of the gradient function must be the function name with ``jac'' appended at the end, while the Hessian function must be the same string plus ``hes.'' Also, the variables in the argument list of each function must be in the same order as they are evoked whenever the function is evoked in \texttt{equations.txt}. Note that the argument list can contain parameters or dynamical states alike. 
+
+The gradient function contains an extra argument ``n'', which is the value of the variable with which the derivative is being taken with respect to: the acceptable values start at 1 (this means the derivative with respect to the first variable in the argument list). The gradient function should returned a different value for each ``n,'' depending on the functions derivative with respect to that particular value.
+
+The Hessian functions in the same way, now with two argument ``n'' and ``m,'', denoting the variable with respect to which the derivative is taken first, and then second, respectively. 
+
+
+\paragraph{\underline{myfunctions.hpp}}
+
+
+\begin{verbatim}
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+double Lorenzvectorfield(double x, double x_p1, double x_m1, 
+                          double x_m2, double forcing)
+{
+  // Lorenz model equations; x = x_n, x_m1 = x_(n-1), 
+  // x_m2 = x_(n-2), x_p1 = x_(n+1)
+  double value=0.0;
+  value = x_m1*(x_p1-x_m2) - x + forcing;
+  return value;
+}
+
+double Lorenzvectorfieldjac(double x, double x_p1, double x_m1, 
+                             double x_m2, double forcing, int n)
+{
+  double value=0.0;
+  switch (n) {
+    case 1:
+    // derivative with respect to x
+      value = -1; break;
+    case 2:
+    // derivative with respect to x_p1
+      value = x_m1; break;
+    case 3:
+    // derivative with respect to x_m1
+      value = x_p1 - x_m2; break;
+    case 4:
+    // derivative with respect to x_m2
+      value = -x_m1; break;
+    case 5:
+    // derivative with respect to forcing
+      value = 1; break;
+    default:
+      cout << "Error in user-defined function jacobian";break;
+  } // end switch
+  return value;
+}
+
+double Lorenzvectorfieldhes(double x, double x_p1, double x_m1, 
+                     double x_m2, double forcing, int n, int m)
+{
+  double value=0.0;
+  switch (n) {
+    case 1:
+    // derivative with respect to x
+      value = 0; break;
+    case 2:
+    // derivative with respect to x_p1
+      if (m == 3){
+         value = 1; break;
+      }
+      else{
+         value = 0; break;
+      }      
+    case 3:
+    // derivative with respect to x_m1
+        if (m == 2){
+           value = 1; break;
+        }
+        else if (m == 4){
+           value = -1; break;
+        }      
+        else{
+           value = 0; break;
+        }      
+    case 4:
+    // derivative with respect to x_m2
+        if (m == 3){
+           value = -1; break;
+        }
+        else{
+           value = 0; break;
+        }      
+    case 5:
+    // derivative with respect to forcing
+      value = 0; break;
+    default:
+      cout << "Error in user-defined function Hessian";break;
+  } 
+  return value;
+}
+\end{verbatim}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=.45\textwidth]{figure/Lorenz96_ext/action.png}
+\caption{Lorenz96 model action plot.}
+\label{fig:Lorenz96_ext_action}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.65\textwidth]{figure/Lorenz96_ext/estimation.png}
+\caption{Lorenz96 model estimated trajectories.}
+\label{fig:Lorenz96_ext_path}
+\end{figure}
+
+
+
+
+
 %% this section deleted
 \iffalse
 \newpage
@@ -807,6 +1032,6 @@ In summary, the following is the list of the steps
 \section{Troubleshooting}
 I have tested these scripts over a wide range of problems, so I believe that the algorithms are correct. However, there are a few common errors that may crop up.
 \begin{itemize}
-\item Variable and parameter naming is very important. Never use a variable name that includes the name of another variable. For instance p1 and p11 would be bad, since p11 includes p1. In this case, p01 and p11 would be adequate. Along this vein, all variable names should be at least 2 characters long, just in case.
+\item Variable and parameter naming is very important. Never use a variable name that includes the name of another variable. For instance p1 and p11 would be bad, since p11 includes p1. In this case, p01 and p11 would be adequate. Along this vein, all variable names should be at least 2 characters long, just in case. The external functions name should not contain any numbers or other characters -- only letters.
 \end{itemize}
 \end{document}

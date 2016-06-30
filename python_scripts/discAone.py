@@ -368,14 +368,11 @@ def subfunc(mystr,myi):
    mytemp = mystr
    Dsearch = re.findall('Derivative\(', mytemp)
    for num in range(len(Dsearch)):
-     jacsearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
-     #jacsearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
-     hessearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
-     #hessearch = re.search('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
+     jacsearch = re.search('Derivative\(([A-Za-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
+     hessearch = re.search('Derivative\(([A-Za-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]*(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', mytemp)
      if jacsearch:
           
        dervar = jacsearch.group(4)
-       #dervar = jacsearch.group(3) 
        var = re.findall('[A-za-z0-9]+\[[0-9]+\]|-?[0-9]*\.?[0-9]+', jacsearch.group(0))
        for i in range(len(var)-1):
          if var[i] == dervar:
@@ -386,13 +383,10 @@ def subfunc(mystr,myi):
          temp = var[i] + ','
          rep += temp
        rep += str(jacnum) +')'
-       mytemp = re.sub('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep,mytemp,1)
-#       mytemp = re.sub('D\(([a-z]+)\((-?[0-9]+(\.[0-9]+)?, |[A-Za-z0-9]+\[[0-9]+\], )+(-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep,mytemp,1)
+       mytemp = re.sub('Derivative\(([A-Za-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep,mytemp,1)
      if hessearch:
        dervar1 = hessearch.group(4)
        dervar2 = hessearch.group(6)
-       #dervar1 = hessearch.group(2)
-       #dervar2 = hessearch.group(4)
        hesnum1 = 0
        hesnum2 = 0
        var = re.findall('[A-za-z0-9]+\[[0-9]+\]|-?[0-9]*\.?[0-9]+', hessearch.group(0))
@@ -407,7 +401,7 @@ def subfunc(mystr,myi):
          temp = var[i] + ','
          rep += temp
        rep += str(hesnum1) +','+ str(hesnum2)+ ')'
-       mytemp = re.sub('Derivative\(([a-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep, mytemp, 1)
+       mytemp = re.sub('Derivative\(([A-Za-z]+)\(([A-Za-z0-9]+\[[0-9]+\])+(, [A-Za-z0-9]+\[[0-9]+\])*\), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\]), (-?[0-9]+(\.[0-9]+)?|[A-Za-z0-9]+\[[0-9]+\])\)', rep, mytemp, 1)
    return mytemp
 #end subfunc
 print("Building objective function strings\n")

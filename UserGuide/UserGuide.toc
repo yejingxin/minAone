@@ -1,29 +1,35 @@
 \contentsline {section}{\numberline {1}About \texttt {minAone}}{2}{section.1}
 \contentsline {section}{\numberline {2}Problem Statement}{2}{section.2}
-\contentsline {section}{\numberline {3}Annealing Procedure}{2}{section.3}
+\contentsline {section}{\numberline {3}Annealing Procedure}{3}{section.3}
 \contentsline {section}{\numberline {4}Installing Required Programs and Packages}{3}{section.4}
-\contentsline {subsection}{\numberline {4.1}Python Packages}{3}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.1}Python Packages}{4}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}IPOPT}{4}{subsection.4.2}
 \contentsline {section}{\numberline {5}minAone.py Description}{5}{section.5}
-\contentsline {section}{\numberline {6}Running the Code}{7}{section.6}
-\contentsline {section}{\numberline {7}Run in Parallel}{12}{section.7}
-\contentsline {section}{\numberline {8}Examples}{13}{section.8}
-\contentsline {subsection}{\numberline {8.1}Lorenz96 D=10 (single data set)}{13}{subsection.8.1}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {Vector field}}\mathsurround \z@ $\relax }{13}{section*.6}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{14}{section*.7}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{15}{section*.8}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{15}{section*.9}
-\contentsline {subsection}{\numberline {8.2}Lorenz96 D=10 (mutiple data sets)}{18}{subsection.8.2}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{18}{section*.10}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{18}{section*.11}
-\contentsline {subsection}{\numberline {8.3}Lorenz96 D=10 (synchronizing control terms)}{23}{subsection.8.3}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {Vector field}}\mathsurround \z@ $\relax }{23}{section*.12}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{23}{section*.13}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{24}{section*.14}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{25}{section*.15}
-\contentsline {subsection}{\numberline {8.4}NaKL}{27}{subsection.8.4}
-\contentsline {paragraph}{Vector field}{27}{section*.16}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{27}{section*.17}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{28}{section*.18}
-\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{29}{section*.19}
-\contentsline {section}{\numberline {9}Troubleshooting}{32}{section.9}
+\contentsline {section}{\numberline {6}Running the Code}{8}{section.6}
+\contentsline {section}{\numberline {7}Run in Parallel}{13}{section.7}
+\contentsline {section}{\numberline {8}Examples}{14}{section.8}
+\contentsline {subsection}{\numberline {8.1}Lorenz96 D=10 (single data set)}{15}{subsection.8.1}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {Vector field}}\mathsurround \z@ $\relax }{15}{section*.6}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{15}{section*.7}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{16}{section*.8}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{17}{section*.9}
+\contentsline {subsection}{\numberline {8.2}Lorenz96 D=10 (mutiple data sets)}{20}{subsection.8.2}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{20}{section*.10}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{20}{section*.11}
+\contentsline {subsection}{\numberline {8.3}Lorenz96 D=10 (synchronizing control terms)}{25}{subsection.8.3}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {Vector field}}\mathsurround \z@ $\relax }{25}{section*.12}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{25}{section*.13}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{26}{section*.14}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{27}{section*.15}
+\contentsline {subsection}{\numberline {8.4}NaKL}{29}{subsection.8.4}
+\contentsline {paragraph}{Vector field}{29}{section*.16}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{29}{section*.17}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{30}{section*.18}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{31}{section*.19}
+\contentsline {subsection}{\numberline {8.5}Lorenz96 D = 10 (externally-defined functions)}{34}{subsection.8.5}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {equations.txt}}\mathsurround \z@ $\relax }{34}{section*.20}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {specs.txt}}\mathsurround \z@ $\relax }{35}{section*.21}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{35}{section*.22}
+\contentsline {subsubsection}{\numberline {8.5.1}External function definitions in myfunctions.hpp}{36}{subsubsection.8.5.1}
+\contentsline {paragraph}{\relax $\@@underline {\hbox {myfunctions.hpp}}\mathsurround \z@ $\relax }{36}{section*.23}
+\contentsline {section}{\numberline {9}Troubleshooting}{39}{section.9}

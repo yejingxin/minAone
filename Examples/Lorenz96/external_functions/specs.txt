@@ -1,0 +1,29 @@
+# N/2 (Using 401 data points from data files)
+200
+# Skipped data 
+100
+# Twice the timestep of the data file
+0.02
+# Input format of files (2: data in single file)
+2
+# (0: there is only 1 dataset, but all measurements in 1 file)
+0
+txt
+observations/observations_1
+# Stimuli data file paths (none)
+# State variable bounds and Rf0 values
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+-15, 15, 0.0001
+# Control variable bounds and initial values (none)
+# Parameter bounds (last line is correct value; not read)
+0, 20, 8.17
+# Alpha, min beta, max beta
+2,1,30

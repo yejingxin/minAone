@@ -5,7 +5,7 @@
 # Twice the timestep of the data file (data taken at 50 kHz)
 0.04
 # Input format of files (1: single data set, initial condition file)
-1
+0
 # Initial data file
 ./input_data/initial_guess.dat
 # Measured data file paths (one for each measurement)

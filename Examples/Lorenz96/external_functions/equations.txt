@@ -1,0 +1,40 @@
+# Problem Name
+lorenz96
+# nY,nP,nU,nI,nF,nM
+10,1,0,0,1,5
+# Dynamical equations (including synchronization terms)
+Lorenzvectorfield(yy0,yy1,yy9,yy8,FF1)
+Lorenzvectorfield(yy1,yy2,yy0,yy9,FF1)
+Lorenzvectorfield(yy2,yy3,yy1,yy0,FF1)
+Lorenzvectorfield(yy3,yy4,yy2,yy1,FF1)
+Lorenzvectorfield(yy4,yy5,yy3,yy2,FF1)
+Lorenzvectorfield(yy5,yy6,yy4,yy3,FF1)
+Lorenzvectorfield(yy6,yy7,yy5,yy4,FF1)
+Lorenzvectorfield(yy7,yy8,yy6,yy5,FF1)
+Lorenzvectorfield(yy8,yy9,yy7,yy6,FF1)
+Lorenzvectorfield(yy9,yy0,yy8,yy7,FF1)
+# Measurement terms of cost function 
+(data0-yy0)*(data0-yy0) + (data1-yy1)*(data1-yy1) + (data2-yy2)*(data2-yy2) + (data3-yy3)*(data3-yy3) + (data4-yy4)*(data4-yy4)
+# Variable names
+yy0
+yy1
+yy2
+yy3
+yy4
+yy5
+yy6
+yy7
+yy8
+yy9
+# Control names (none)
+# Parameter names
+FF1
+# Data names
+data0
+data1
+data2
+data3
+data4
+# Stimuli names (none)
+# External functions (defined in myfunctions.hpp file)	
+Lorenzvectorfield, 5

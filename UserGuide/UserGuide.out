@@ -12,4 +12,6 @@
 \BOOKMARK [2][-]{subsection.8.2}{Lorenz96 D=10 \(mutiple data sets\)}{section.8}% 12
 \BOOKMARK [2][-]{subsection.8.3}{Lorenz96 D=10 \(synchronizing control terms\)}{section.8}% 13
 \BOOKMARK [2][-]{subsection.8.4}{NaKL}{section.8}% 14
-\BOOKMARK [1][-]{section.9}{Troubleshooting}{}% 15
+\BOOKMARK [2][-]{subsection.8.5}{Lorenz96 D = 10 \(externally-defined functions\)}{section.8}% 15
+\BOOKMARK [3][-]{subsubsection.8.5.1}{External function definitions in myfunctions.hpp}{subsection.8.5}% 16
+\BOOKMARK [1][-]{section.9}{Troubleshooting}{}% 17
