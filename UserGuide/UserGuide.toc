@@ -32,4 +32,4 @@
 \contentsline {paragraph}{\relax $\@@underline {\hbox {sub.sh}}\mathsurround \z@ $\relax }{35}{section*.22}
 \contentsline {subsubsection}{\numberline {8.5.1}External function definitions in myfunctions.hpp}{36}{subsubsection.8.5.1}
 \contentsline {paragraph}{\relax $\@@underline {\hbox {myfunctions.hpp}}\mathsurround \z@ $\relax }{36}{section*.23}
-\contentsline {section}{\numberline {9}Troubleshooting}{39}{section.9}
+\contentsline {section}{\numberline {9}Troubleshooting}{41}{section.9}

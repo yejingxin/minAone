@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.8.26)  30 JUN 2016 11:07
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.8.26)  30 JUN 2016 11:54
 entering extended mode
 **C:/cygwin64/home/Nirag/repos/minAone-master/minAone/UserGuide/UserGuide.tex
 (C:/cygwin64/home/Nirag/repos/minAone-master/minAone/UserGuide/UserGuide.tex
@@ -1038,44 +1038,44 @@ Underfull \hbox (badness 10000) in paragraph at lines 152--155
  []
 
 [8] [9]
-Overfull \hbox (5.57718pt too wide) in paragraph at lines 205--206
+Overfull \hbox (5.57718pt too wide) in paragraph at lines 204--205
 \OT1/cmr/m/n/10.95 you have 25 dif-fer-ent sets of ob-served data, la-beled \OT
 1/cmtt/m/n/10.95 observations0.txt\OT1/cmr/m/n/10.95 ,
  []
 
 [10]
-Overfull \hbox (52.26683pt too wide) in paragraph at lines 219--220
+Overfull \hbox (52.26683pt too wide) in paragraph at lines 218--219
 \OT1/cmr/m/n/10.95 while task IDs 1000-1999 will pro-duce 1000 es-ti-ma-tions u
 s-ing \OT1/cmtt/m/n/10.95 observations1.txt
  []
 
 [11] [12] [13]
-Overfull \hbox (13.15321pt too wide) in paragraph at lines 303--304
+Overfull \hbox (13.15321pt too wide) in paragraph at lines 302--303
 []\OT1/cmr/m/n/10.95 Each path will be stored in in-di-vid-ual file with the na
 me like \OT1/cmtt/m/n/10.95 D5[]M1[]IC0.dat\OT1/cmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (14.59961pt too wide) in paragraph at lines 303--304
+Overfull \hbox (14.59961pt too wide) in paragraph at lines 302--303
 \OT1/cmtt/m/n/10.95 D5[]M1[]PATH0[]IC1.dat\OT1/cmr/m/n/10.95 , ..., \OT1/cmtt/m
 /n/10.95 D5[]M1[]PATH0[]IC100.dat\OT1/cmr/m/n/10.95 , ..., \OT1/cmtt/m/n/10.95 
 D5[]M1[]PATH50[]IC0.dat\OT1/cmr/m/n/10.95 ,
  []
 
 
-Overfull \hbox (36.26675pt too wide) in paragraph at lines 313--314
+Overfull \hbox (36.26675pt too wide) in paragraph at lines 312--313
 []\OT1/cmr/m/n/10.95 NaKL neu-ron model to show how to in-clude ex-ter-nal stim
 -uli in \OT1/cmtt/m/n/10.95 equations.txt
  []
 
 [14]
-Overfull \hbox (71.15158pt too wide) in paragraph at lines 346--346
+Overfull \hbox (71.15158pt too wide) in paragraph at lines 345--345
 []\OT1/cmtt/m/n/10.95 (data0-yy0)*(data0-yy0) + (data1-yy1)*(data1-yy1) + (data
 2-yy2)*(data2-yy2)[] 
  []
 
 [15]
-Overfull \hbox (30.91077pt too wide) in paragraph at lines 380--380
+Overfull \hbox (30.91077pt too wide) in paragraph at lines 379--379
 []\OT1/cmtt/m/n/10.95 # Input format of files (0: only 1 input file, no initial
  condition)[] 
  []
@@ -1085,7 +1085,7 @@ File: figure/Lorenz96_single/action.png Graphic file (type png)
 
 <use figure/Lorenz96_single/action.png>
 Package pdftex.def Info: figure/Lorenz96_single/action.png used on input line 4
-24.
+23.
 (pdftex.def)             Requested size: 360.0pt x 269.99951pt.
 
 
@@ -1096,7 +1096,7 @@ File: figure/Lorenz96_single/estimation.png Graphic file (type png)
 
 <use figure/Lorenz96_single/estimation.png>
 Package pdftex.def Info: figure/Lorenz96_single/estimation.png used on input li
-ne 431.
+ne 430.
 (pdftex.def)             Requested size: 360.0pt x 307.99612pt.
 
 
@@ -1105,7 +1105,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [17] [18 <C:/cygwin64/home/Nirag/repos/minAone-master/minAone/UserGuide/figure/
 Lorenz96_single/action.png>] [19 <C:/cygwin64/home/Nirag/repos/minAone-master/m
 inAone/UserGuide/figure/Lorenz96_single/estimation.png>]
-Overfull \hbox (25.16208pt too wide) in paragraph at lines 452--452
+Overfull \hbox (25.16208pt too wide) in paragraph at lines 451--451
 []\OT1/cmtt/m/n/10.95 # Input format of files (2: several datasets, no initial 
 condition)[] 
  []
@@ -1117,7 +1117,7 @@ File: figure/Lorenz96_multiple/action_path_1.png Graphic file (type png)
 
 <use figure/Lorenz96_multiple/action_path_1.png>
 Package pdftex.def Info: figure/Lorenz96_multiple/action_path_1.png used on inp
-ut line 497.
+ut line 496.
 (pdftex.def)             Requested size: 169.20044pt x 126.89784pt.
 
 <figure/Lorenz96_multiple/action_path_2.png, id=219, 578.16pt x 433.62pt>
@@ -1125,7 +1125,7 @@ File: figure/Lorenz96_multiple/action_path_2.png Graphic file (type png)
 
 <use figure/Lorenz96_multiple/action_path_2.png>
 Package pdftex.def Info: figure/Lorenz96_multiple/action_path_2.png used on inp
-ut line 498.
+ut line 497.
 (pdftex.def)             Requested size: 169.20044pt x 126.89784pt.
 
 <figure/Lorenz96_multiple/action_path_3.png, id=220, 578.16pt x 433.62pt>
@@ -1133,7 +1133,7 @@ File: figure/Lorenz96_multiple/action_path_3.png Graphic file (type png)
 
 <use figure/Lorenz96_multiple/action_path_3.png>
 Package pdftex.def Info: figure/Lorenz96_multiple/action_path_3.png used on inp
-ut line 499.
+ut line 498.
 (pdftex.def)             Requested size: 169.20044pt x 126.89784pt.
 
 <figure/Lorenz96_multiple/action_path_4.png, id=221, 578.16pt x 433.62pt>
@@ -1141,7 +1141,7 @@ File: figure/Lorenz96_multiple/action_path_4.png Graphic file (type png)
 
 <use figure/Lorenz96_multiple/action_path_4.png>
 Package pdftex.def Info: figure/Lorenz96_multiple/action_path_4.png used on inp
-ut line 500.
+ut line 499.
 (pdftex.def)             Requested size: 169.20044pt x 126.89784pt.
 
 <figure/Lorenz96_multiple/action_path_5.png, id=222, 578.16pt x 433.62pt>
@@ -1149,7 +1149,7 @@ File: figure/Lorenz96_multiple/action_path_5.png Graphic file (type png)
 
 <use figure/Lorenz96_multiple/action_path_5.png>
 Package pdftex.def Info: figure/Lorenz96_multiple/action_path_5.png used on inp
-ut line 501.
+ut line 500.
 (pdftex.def)             Requested size: 169.20044pt x 126.89784pt.
 
 
@@ -1160,7 +1160,7 @@ File: figure/Lorenz96_multiple/estimation_1.png Graphic file (type png)
 
 <use figure/Lorenz96_multiple/estimation_1.png>
 Package pdftex.def Info: figure/Lorenz96_multiple/estimation_1.png used on inpu
-t line 508.
+t line 507.
 (pdftex.def)             Requested size: 360.0pt x 307.99612pt.
 
 
@@ -1171,7 +1171,7 @@ File: figure/Lorenz96_multiple/estimation_5.png Graphic file (type png)
 
 <use figure/Lorenz96_multiple/estimation_5.png>
 Package pdftex.def Info: figure/Lorenz96_multiple/estimation_5.png used on inpu
-t line 514.
+t line 513.
 (pdftex.def)             Requested size: 360.0pt x 304.61494pt.
 
 
@@ -1187,12 +1187,12 @@ gure/Lorenz96_multiple/action_path_4.png> <C:/cygwin64/home/Nirag/repos/minAone
 cygwin64/home/Nirag/repos/minAone-master/minAone/UserGuide/figure/Lorenz96_mult
 iple/estimation_1.png>] [24 <C:/cygwin64/home/Nirag/repos/minAone-master/minAon
 e/UserGuide/figure/Lorenz96_multiple/estimation_5.png>]
-Overfull \hbox (81.15097pt too wide) in paragraph at lines 533--533
+Overfull \hbox (81.15097pt too wide) in paragraph at lines 532--532
 [] 
  []
 
 
-Overfull \hbox (71.15158pt too wide) in paragraph at lines 552--552
+Overfull \hbox (71.15158pt too wide) in paragraph at lines 551--551
 []\OT1/cmtt/m/n/10.95 (data0-yy0)*(data0-yy0) + (data1-yy1)*(data1-yy1) + (data
 2-yy2)*(data2-yy2)[] 
  []
@@ -1200,7 +1200,7 @@ Overfull \hbox (71.15158pt too wide) in paragraph at lines 552--552
 [25
 
 ]
-Overfull \hbox (105.6437pt too wide) in paragraph at lines 594--594
+Overfull \hbox (105.6437pt too wide) in paragraph at lines 593--593
 []\OT1/cmtt/m/n/10.95 # State variable bounds and Rf0 values (Rf0 high to enfor
 ce constraints strictly)[] 
  []
@@ -1210,7 +1210,7 @@ File: figure/Lorenz96_syn/estimation.png Graphic file (type png)
 
 <use figure/Lorenz96_syn/estimation.png>
 Package pdftex.def Info: figure/Lorenz96_syn/estimation.png used on input line 
-634.
+633.
 (pdftex.def)             Requested size: 360.0pt x 357.88458pt.
 
 
@@ -1218,25 +1218,25 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 [27] [28 <C:/cygwin64/home/Nirag/repos/minAone-master/minAone/UserGuide/figure/
 Lorenz96_syn/estimation.png>]
-Overfull \hbox (42.40814pt too wide) in paragraph at lines 657--657
+Overfull \hbox (42.40814pt too wide) in paragraph at lines 656--656
 []\OT1/cmtt/m/n/10.95 gNa*(m0*m0*m0*h0)*(ENa-V0)+gK*n0*n0*n0*n0*(EK-V0)+gL*(EL-
 V0)+Area*Iinj[] 
  []
 
 
-Overfull \hbox (19.41339pt too wide) in paragraph at lines 658--658
+Overfull \hbox (19.41339pt too wide) in paragraph at lines 657--657
 []\OT1/cmtt/m/n/10.95 (0.5*(1+tanh((V0-Vmo)*dVm)) - m0)/(Cm1+Cm2*(1.0-tanh((V0-
 Vmo)*dVm)[] 
  []
 
 
-Overfull \hbox (19.41339pt too wide) in paragraph at lines 660--660
+Overfull \hbox (19.41339pt too wide) in paragraph at lines 659--659
 []\OT1/cmtt/m/n/10.95 (0.5*(1+tanh((V0-Vho)*dVh)) - h0)/(Ch1+Ch2*(1.0-tanh((V0-
 Vho)*dVh)[] 
  []
 
 
-Overfull \hbox (19.41339pt too wide) in paragraph at lines 662--662
+Overfull \hbox (19.41339pt too wide) in paragraph at lines 661--661
 []\OT1/cmtt/m/n/10.95 (0.5*(1+tanh((V0-Vno)*dVn)) - n0)/(Cn1+Cn2*(1.0-tanh((V0-
 Vno)*dVn)[] 
  []
@@ -1244,13 +1244,13 @@ Vno)*dVn)[]
 [29
 
 ]
-Overfull \hbox (30.91077pt too wide) in paragraph at lines 708--708
+Overfull \hbox (30.91077pt too wide) in paragraph at lines 707--707
 []\OT1/cmtt/m/n/10.95 # Input format of files (1: single data set, initial cond
 ition file)[] 
  []
 
 
-Overfull \hbox (19.41339pt too wide) in paragraph at lines 721--721
+Overfull \hbox (19.41339pt too wide) in paragraph at lines 720--720
 []\OT1/cmtt/m/n/10.95 # Parameter bounds (plus true values and names, which are
 n't read)[] 
  []
@@ -1259,7 +1259,7 @@ n't read)[]
 File: figure/NaKL/action.png Graphic file (type png)
 
 <use figure/NaKL/action.png>
-Package pdftex.def Info: figure/NaKL/action.png used on input line 763.
+Package pdftex.def Info: figure/NaKL/action.png used on input line 762.
 (pdftex.def)             Requested size: 360.0pt x 269.99951pt.
 
 
@@ -1269,7 +1269,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 File: figure/NaKL/estimation.png Graphic file (type png)
 
 <use figure/NaKL/estimation.png>
-Package pdftex.def Info: figure/NaKL/estimation.png used on input line 770.
+Package pdftex.def Info: figure/NaKL/estimation.png used on input line 769.
 (pdftex.def)             Requested size: 288.0011pt x 412.24411pt.
 
 
@@ -1278,7 +1278,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [31] [32 <C:/cygwin64/home/Nirag/repos/minAone-master/minAone/UserGuide/figure/
 NaKL/action.png>] [33 <C:/cygwin64/home/Nirag/repos/minAone-master/minAone/User
 Guide/figure/NaKL/estimation.png>]
-Overfull \hbox (71.15158pt too wide) in paragraph at lines 803--803
+Overfull \hbox (71.15158pt too wide) in paragraph at lines 802--802
 []\OT1/cmtt/m/n/10.95 (data0-yy0)*(data0-yy0) + (data1-yy1)*(data1-yy1) + (data
 2-yy2)*(data2-yy2)[] 
  []
@@ -1286,25 +1286,25 @@ Overfull \hbox (71.15158pt too wide) in paragraph at lines 803--803
 [34
 
 ] [35] [36]
-Overfull \hbox (2.16733pt too wide) in paragraph at lines 910--910
+Overfull \hbox (2.16733pt too wide) in paragraph at lines 909--909
 []\OT1/cmtt/m/n/10.95 double Lorenzvectorfieldjac(double x, double x_p1, double
  x_m1,[] 
  []
 
 
-Overfull \hbox (7.91602pt too wide) in paragraph at lines 911--911
+Overfull \hbox (7.91602pt too wide) in paragraph at lines 910--910
 []                             \OT1/cmtt/m/n/10.95 double x_m2, double forcing,
  int n)[] 
  []
 
 
-Overfull \hbox (2.16733pt too wide) in paragraph at lines 936--936
+Overfull \hbox (2.16733pt too wide) in paragraph at lines 935--935
 []\OT1/cmtt/m/n/10.95 double Lorenzvectorfieldhes(double x, double x_p1, double
  x_m1,[] 
  []
 
 
-Overfull \hbox (2.16733pt too wide) in paragraph at lines 937--937
+Overfull \hbox (2.16733pt too wide) in paragraph at lines 936--936
 []                     \OT1/cmtt/m/n/10.95 double x_m2, double forcing, int n, 
 int m)[] 
  []
@@ -1313,26 +1313,32 @@ int m)[]
 File: figure/Lorenz96_ext/action.png Graphic file (type png)
 
 <use figure/Lorenz96_ext/action.png>
-Package pdftex.def Info: figure/Lorenz96_ext/action.png used on input line 984.
+Package pdftex.def Info: figure/Lorenz96_ext/action.png used on input line 983.
 
-(pdftex.def)             Requested size: 161.9989pt x 121.49878pt.
+(pdftex.def)             Requested size: 288.0011pt x 215.99564pt.
  [38]
 <figure/Lorenz96_ext/estimation.png, id=334, 716.9184pt x 612.1269pt>
 File: figure/Lorenz96_ext/estimation.png Graphic file (type png)
 
 <use figure/Lorenz96_ext/estimation.png>
 Package pdftex.def Info: figure/Lorenz96_ext/estimation.png used on input line 
-991.
-(pdftex.def)             Requested size: 233.9978pt x 199.78885pt.
- [39 <C:/cygwin64/home/Nirag/repos/minAone-master/minAone/UserGuide/figure/Lore
-nz96_ext/action.png> <C:/cygwin64/home/Nirag/repos/minAone-master/minAone/UserG
-uide/figure/Lorenz96_ext/estimation.png>] [40]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1037.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1037.
+990.
+(pdftex.def)             Requested size: 360.0pt x 307.37967pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[39 <C:/cygwin64/home/Nirag/repos/minAone-master/minAone/UserGuide/figure/Loren
+z96_ext/action.png>] [40 <C:/cygwin64/home/Nirag/repos/minAone-master/minAone/U
+serGuide/figure/Lorenz96_ext/estimation.png>] [41
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1036.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1036.
 
 (C:\cygwin64\home\Nirag\repos\minAone-master\minAone\UserGuide\UserGuide.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1037.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1037.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1036.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1036.
 
 Package rerunfilecheck Info: File `UserGuide.out' has not changed.
 (rerunfilecheck)             Checksum: 30CA725F0433159753C13D534D4A2BE1;1141.
@@ -1346,9 +1352,9 @@ LaTeX Warning: There were multiply-defined labels.
 ### simple group (level 1) entered at line 152 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 30051 strings out of 493921
- 640520 string characters out of 3147282
- 766738 words of memory out of 3000000
+ 30052 strings out of 493921
+ 640527 string characters out of 3147282
+ 766974 words of memory out of 3000000
  32847 multiletter control sequences out of 15000+200000
  11595 words of font info for 43 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
@@ -1366,9 +1372,9 @@ sy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Prog
 ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program File
 s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on UserGuide.pdf (40 pages, 1177864 bytes).
+Output written on UserGuide.pdf (41 pages, 1178819 bytes).
 PDF statistics:
- 416 PDF objects out of 1000 (max. 8388607)
- 98 named destinations out of 1000 (max. 500000)
+ 420 PDF objects out of 1000 (max. 8388607)
+ 99 named destinations out of 1000 (max. 500000)
  219 words of extra memory for PDF output out of 10000 (max. 10000000)
 

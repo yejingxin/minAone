@@ -161,10 +161,9 @@ minAone uses as input a) any needed data files containing measurement or stimulu
 
 \item The measurement term of the cost function.  A penalty term for coupling terms is suggested as any coupling to measurements is not present in physical systems.
 
-\item The names of all the variables.  These must be the same as used in the differential equations and should be multiple letters/and or numbers such that variable name is contained in any other name or common function.
-\item The names of parameters, names of control variables (these are time-dependent variables over which the search is performed but for which no explicit dynamical equations are given; one may also think of them as time-dependent parameters), names of data, and names of stimuli, in that order.  Again use fully unique names.
-\item Function names and number of arguments of that function separated by a comma.  Use a function if there is some component of the dynamics with a removable singularity or other difficult numerical object that requires an alternative local definition.
-\item Functions will require an additional file 'myfunctions.cpp' containing the function definition along with its first and second derivatives. These allow for piecewise functions, removable singularities, etc. An example of this is given.
+\item The names of all the state variables.  These must be the same as used in the differential equations and should be multiple letters/and or numbers such that variable name is contained in any other name or common function.
+\item The names of the control variables (these are time-dependent variables over which the search is performed but for which no explicit dynamical equations are given; one may also think of them as time-dependent parameters), of the static parameters, of the data, and of the stimuli, in that order.
+\item The names of the externally-defined functions and number of arguments of that function separated by a comma.  Use a function if there is some component of the dynamics with a removable singularity or other difficult numerical object that requires an alternative local definition.Functions will require an additional file 'myfunctions.cpp' containing the function definition along with its first and second derivatives. These allow for piecewise functions, removable singularities, etc. An example of this is given.
 \end{itemize}
 \bigskip
 \pagebreak
@@ -174,7 +173,7 @@ minAone uses as input a) any needed data files containing measurement or stimulu
 
 \begin{itemize}
 
-\item {\bf Line 1} number of discrete timesteps isteps the code will use.  Importantly, because the code is compiled using a midpoint method, the actual problem length will double this plus one. If your data file consists of $N$+1 points, this value should be $N/2$.
+\item {\bf Line 1} number of discrete timesteps the code will use.  Importantly, because the code is compiled using a midpoint method, the actual problem length will double this plus one. If your data file consists of $N$+1 points, this value should be $N/2$.
 \item {\bf Line 2} number of lines in each input file to skip.  This allows for only certain parts of a long data set to be used. Note that this same amount of data will be skipped in initial condition and stimulus files as well.
 \item {\bf Line 3} double the time step of the data. Again, since a midpoint method is used, this time step is for a whole step, which includes two points. If your data is sampled at $dt = 0.05$, this value should be $0.1$.
 \item {\bf Line 4 and following several lines} Line 4 is extremely important; it indicates the format of the input files. The only accepted values are  either 0, 1, 2, or 3. These are described in detail below.
@@ -879,9 +878,9 @@ observations/observations_1
 
 \subsubsection{External function definitions in myfunctions.hpp}
 
-The \texttt{myfunctions.hpp} file includes definitions of the user-defined functions that were declared in \texttt{equations.txt}. This header file has 3 functions: the function itself, its gradient function, and its Hessian matrix. The name of the function itself must align with that declared in \texttt{equations.txt}. Likewise, the name of the gradient function must be the function name with ``jac'' appended at the end, while the Hessian function must be the same string plus ``hes.'' Also, the variables in the argument list of each function must be in the same order as they are evoked whenever the function is evoked in \texttt{equations.txt}. Note that the argument list can contain parameters or dynamical states alike. 
+The \texttt{myfunctions.hpp} file includes definitions of the user-defined functions that were declared in \texttt{equations.txt}. This header file has 3 functions: the function itself, its gradient function, and its Hessian matrix. The name of the function itself must align with that declared in \texttt{equations.txt}. Likewise, the name of the gradient function must be the function name with ``jac'' appended at the end, while the Hessian function must be the same string plus ``hes.'' Also, the variables in the argument list of each function must be in the same order as they are called whenever the function is evoked in \texttt{equations.txt}. Note that the argument list can contain parameters or dynamical states alike. 
 
-The gradient function contains an extra argument ``n'', which is the value of the variable with which the derivative is being taken with respect to: the acceptable values start at 1 (this means the derivative with respect to the first variable in the argument list). The gradient function should returned a different value for each ``n,'' depending on the functions derivative with respect to that particular value.
+The gradient function contains an extra argument ``n'', which is the value of the variable with which the derivative is being taken with respect to: the acceptable values start at 1 (this means the derivative with respect to the first variable in the argument list). The gradient function should returned a different value for each ``n,'' depending on the functions derivative with respect to that particular variable.
 
 The Hessian functions in the same way, now with two argument ``n'' and ``m,'', denoting the variable with respect to which the derivative is taken first, and then second, respectively. 
 
@@ -981,20 +980,20 @@ double Lorenzvectorfieldhes(double x, double x_p1, double x_m1,
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=.45\textwidth]{figure/Lorenz96_ext/action.png}
-\caption{Lorenz96 model action plot.}
+\includegraphics[width=.8\textwidth]{figure/Lorenz96_ext/action.png}
+\caption{Lorenz96 model action plot, with $L = 5$. The results here will be identical if the functions (here externally-defined) were insteadinput explicitly in \texttt{equations.txt}.}
 \label{fig:Lorenz96_ext_action}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.65\textwidth]{figure/Lorenz96_ext/estimation.png}
-\caption{Lorenz96 model estimated trajectories.}
+\includegraphics[width=1\textwidth]{figure/Lorenz96_ext/estimation.png}
+\caption{Lorenz96 model estimated trajectories. Five variables is sufficient to give excellent estimations for all 100 runs of the annealing.}
 \label{fig:Lorenz96_ext_path}
 \end{figure}
 
 
-
+\clearpage
 
 
 %% this section deleted
