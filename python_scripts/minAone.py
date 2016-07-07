@@ -549,6 +549,7 @@ f.write('{\n\
 
 # Number of equality constraints
 
+
 f.write('\n\
   // Number of equality constraints\n\
   m = 0;\n')
@@ -694,7 +695,7 @@ f.write('\
       FILE *initFILE;\n\
       char init_idx[21];\n\
       if (modid != 0){\n\
-        sprintf(init_idx, "%s.%s", pathid, specs[5].c_str());\n\
+        sprintf(init_idx, "%s.%s", taskid, specs[5].c_str());\n\
       }\n\
       else{\n\
         sprintf(init_idx, ".%s", specs[5].c_str());\n\
